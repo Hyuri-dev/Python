@@ -1,7 +1,7 @@
-from fastapi import FastAPI , HTTPException # htttpexception es una extension de fastapi para utilizar  status code en otras partes de nuestras solicitudes
+from fastapi import APIRouter , HTTPException # htttpexception es una extension de fastapi para utilizar  status code en otras partes de nuestras solicitudes
 from pydantic import BaseModel
 
-app = FastAPI()
+router = APIRouter(prefix="/user" , tags=["user"], responses= {404: {"Message": "No encontrado"}})
 
 #Entidad usuario
 
@@ -19,13 +19,13 @@ user_list = [
 ]
 
 
-@app.get("/usersjson")
+@router.get("/usersjson")
 async def usersjson ():
     return  [{"name": "Jefferson" , "surname": "Stuwart", "email": "jeffry@gmail.com", "age": 23},
             {"name": "Mario" , "surname": "Malave", "email": "mariobro@gmail.com", "age": 45},
             {"name": "Areanna" , "surname": "Sofia", "email": "sofi@gmail.com", "age": 22} ]
 
-@app.get("/users")
+@router.get("/")
 async def users ():
     return user_list
 
@@ -34,12 +34,12 @@ async def users ():
 # que hace esta nueva peticion o accion#
 
 #Busqueda por path: su uso por lo general se emplea en busquedas de parametros fijos
-@app.get("/user/{id}")
+@router.get("/{id}")
 async def user (id:int):
     return search_user(id)
 
 #Busqueda por query:  Su uso se emplea en busquedas de parametros que pueden estar o no estar
-@app.get("/userquery/")
+@router.get("/query")
 async def user (id:int):
     return search_user(id)
 
@@ -54,7 +54,7 @@ def search_user(id: int):
 # Operacion POST, si queremos crear una peticion al api para enviar datos, podemos hacerlo utilizando el metodo post
 #Este metodo nos sirve para enviarle datos a nuestra API
 
-@app.post("/user/", response_model= User ,status_code= 201) #El codigo http 201 significica exitoso y creado, en este caso devolvera 201 si se creo exitosamente el usuario tambien creamos un response model para que en la documentacion en el apartado de responses se pueda ver que devuelve esta peticion
+@router.post("/", response_model= User ,status_code= 201) #El codigo http 201 significica exitoso y creado, en este caso devolvera 201 si se creo exitosamente el usuario tambien creamos un response model para que en la documentacion en el apartado de responses se pueda ver que devuelve esta peticion
 async def user (user: User):
     if type(search_user(user.id)) == User:
         raise HTTPException(status_code= 404, detail="El Usuario ya existe en el listado") #Para lanzar un error directamente, retornamos con raise
@@ -65,7 +65,7 @@ async def user (user: User):
 #Operacion PUT, Si Deseamos actualizar datos en la API es posible hacerlo con el metodo PUT
 #Este metodo nos sirve para actualizar datos de la api como un usuario en nuestro caso
 
-@app.put("/user/")
+@router.put("/")
 async def user (user: User):
     
     found = False
@@ -82,7 +82,7 @@ async def user (user: User):
 #Operacion DELETE Si queremos eliminar datos del API con Utilizar DELETE es suficiente
 #Este metodo nos permite eliminar un dato o un usuario de nuestro listado
 
-@app.delete("/user/{id}")
+@router.delete("/{id}")
 async def user (id: int):
     
     found = False

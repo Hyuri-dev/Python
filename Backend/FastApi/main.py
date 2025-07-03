@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from routers import products , users
 
 app = FastAPI()
 
@@ -6,6 +7,11 @@ app = FastAPI()
 @app.get("/")
 async def root ():
     return "Hola FastApi!2"
+
+#Routers
+app.include_router(products.router)
+app.include_router(users.router)
+
 
 
 @app.get("/url") #Para poder añadir otro get hace falta poder añadir una nueva ruta al path, ya que el / solo es el path main o raiz
