@@ -1,0 +1,24 @@
+{
+    "ordenes": [
+        {
+            "tamaño": "mediano",
+            "precio": 12,
+            "toppings": ["anchoas", "jamon", "queso"],
+            "delivery": true,
+            "cliente": {
+                "nombre": "Carlos",
+                "telefono": null     
+            }
+        },
+        {
+            "tamaño": "mediano",
+            "precio": 12,
+            "toppings": ["anchoas", "jamon", "queso"],
+            "delivery": true,
+            "cliente": {
+                "nombre": "Carlos",
+                "telefono": null  
+            }
+        }
+    ]
+}
