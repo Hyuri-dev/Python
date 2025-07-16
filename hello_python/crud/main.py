@@ -2,13 +2,14 @@ import tkinter as tk
 import ttkbootstrap as tkb
 from ttkbootstrap.constants import * 
 from tkinter import ttk
-
+from database import create_user
 
 
 class App :
     
     def __init__(self):
         self.root = tkb.Window(themename="superhero")
+        self.root.title("Gestor de usuarios")
         
         
         #notebook
@@ -34,7 +35,7 @@ class App :
         
         #Botones crear y cancelar
         
-        self.btn_crear = tkb.Button(self.pestaña_crear, text= "Crear", bootstyle = SUCCESS, width= 20)
+        self.btn_crear = tkb.Button(self.pestaña_crear, text= "Crear", command= lambda: create_user(self) ,bootstyle = SUCCESS, width= 20)
         self.btn_crear.grid(row= 1 , column= 1, padx= (40 , 0) ,sticky="W")
         
         self.btn_cancelar = tkb.Button(self.pestaña_crear, text= "Cancelar", bootstyle = DANGER, width= 20)
