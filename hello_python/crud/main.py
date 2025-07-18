@@ -17,6 +17,7 @@ class App :
         
         #Contenido de las pestañas
         
+        # Pestaña crear usuario
         self.pestaña_crear = tk.Frame(self.pestañas)
         
         #nombre entrada
@@ -48,18 +49,32 @@ class App :
         
         #Agregar pestañas al notebook
         self.pestañas.add(self.pestaña_crear, text="Crear usuario")
-        self.pestañas.add(self.relleno2, text="Consulta de usuario")
-        self.pestañas.add(self.relleno3, text="Lista de usuarios")
         
         self.pestañas.pack()
+        
+        
+        #Pestaña consultar usuario
+        
+        self.pestaña_consultar_usuario = tk.Frame(self.pestañas)
+        self.lbl_consultar = tk.Label(self.pestaña_consultar_usuario, text= "Consultar usuario")
+        self.lbl_consultar.grid(row= 0 , column= 0, padx=(220, 0), pady= 30)
+        
+        self.title_buscar = tk.Label(self.pestaña_consultar_usuario, text= "Identificacion (Cedula, RIF, DNI)")
+        self.title_buscar.grid(row=1 , column= 0 )
+        
+        self.entry_busqueda_usuario = tk.Entry(self.pestaña_consultar_usuario)
+        self.entry_busqueda_usuario.grid(row=1 , column=1)
+        
+        self.btn_buscar = tk.Button(self.pestaña_consultar_usuario, text="Buscar")
+        self.btn_buscar.grid(row=1 , column= 2, padx=(20))
+        
+        
+        self.pestañas.add(self.pestaña_consultar_usuario, text="Consulta de usuario")
+        self.pestañas.add(self.relleno3, text="Lista de usuarios")
+        
+        
         self.root.mainloop()
         
-
-
-
-
-
-
-
+        
 
 App()
