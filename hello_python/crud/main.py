@@ -60,13 +60,16 @@ class App :
         self.lbl_consultar.grid(row= 0 , column= 0, padx=(220, 0), pady= 30)
         
         self.title_buscar = tk.Label(self.pestaña_consultar_usuario, text= "Identificacion (Cedula, RIF, DNI)")
-        self.title_buscar.grid(row=1 , column= 0 )
+        self.title_buscar.grid(row=1 , column= 0 , sticky="W" , padx= (20, 0))
         
         self.entry_busqueda_usuario = tk.Entry(self.pestaña_consultar_usuario)
-        self.entry_busqueda_usuario.grid(row=1 , column=1)
+        self.entry_busqueda_usuario.grid(row=1 , column=1, sticky="W", padx=(25, 0))
         
         self.btn_buscar = tk.Button(self.pestaña_consultar_usuario, text="Buscar")
         self.btn_buscar.grid(row=1 , column= 2, padx=(20))
+        
+        self.text_user = tk.Label(self.pestaña_consultar_usuario, text= f"Usuario: ")
+        self.text_user.grid(row= 2 , column= 1, sticky= "W")
         
         
         self.pestañas.add(self.pestaña_consultar_usuario, text="Consulta de usuario")
