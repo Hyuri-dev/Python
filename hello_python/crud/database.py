@@ -57,3 +57,24 @@ def mostrar_usuarios (app):
   for fila in resultado:
     app.treeview_usuarios.insert("", "end", values=(fila[0], fila[1], fila[2]))
 
+def obtener_item (app):
+  selected_item = app.treeview_usuarios.selection() # usamos tree selection para seleccionar el item que queremos manipular
+  
+  if selected_item:
+    messagebox.showinfo("Seleccion", f"Se selecciono el item: {selected_item} correctamente")
+    # print(f"Se selecciono el item: {selected_item}")
+
+def eliminar_usuario (app):
+  selected_item = app.treeview_usuarios.selection() # usamos tree selection para seleccionar el item que queremos manipular
+  if selected_item: 
+    valores = app.treeview_usuarios.item(selected_item[0], "values")
+    id_usuario = valores[0]
+    cur = conexion.cursor()
+    cur.execute("DELETE FROM usuarios WHERE id = ?", (id_usuario))
+    conexion.commit()
+    mostrar_usuarios(app)
+    messagebox.showinfo("Eliminado", f"Usuario con ID: {id_usuario} eliminado correctamente")
+  else:
+    messagebox.showerror("Error", "No se ha podido eliminar el usuario")
+  
+

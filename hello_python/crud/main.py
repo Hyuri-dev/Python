@@ -2,7 +2,7 @@ import tkinter as tk
 import ttkbootstrap as tkb
 from ttkbootstrap.constants import * 
 from tkinter import ttk
-from database import create_user , search_user, mostrar_usuarios
+from database import create_user , search_user, mostrar_usuarios , obtener_item , eliminar_usuario
 
 
 class App :
@@ -89,6 +89,12 @@ class App :
         self.title_listado = tk.Label(self.pestaña_listado_usuarios, text="Listado de usuarios registrados")
         self.title_listado.grid(row= 0 , column= 0, columnspan= 3 , sticky="ew", pady= 20)
         self.title_listado.config(font=("Arial", 16 , "bold"))
+        
+        self.button_seleccionado = tk.Button (self.pestaña_listado_usuarios, text="Eliminar" , command= lambda: eliminar_usuario(self))
+        self.button_seleccionado.grid (row= 0, column=2, columnspan= 3 , sticky="ew")
+        
+        
+        #Listado de usuarios
         
         self.treeview_usuarios = ttk.Treeview(self.pestaña_listado_usuarios)
         self.treeview_usuarios.grid(row= 1 , column= 0 , columnspan= 3, sticky="ew ")
