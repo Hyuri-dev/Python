@@ -13,8 +13,6 @@ conexion = lite3.connect(database)
 try:
   conexion.execute(""" CREATE TABLE IF NOT EXISTS usuarios (
     id integer primary key autoincrement , nombre text, cedula integer unique)""")
-  
-  # print("tabla creada con exito")
 except lite3.OperationalError as e:
   print(f"Error no se ha podido hacer tu solicitud: {e}")
   
@@ -23,7 +21,6 @@ def create_user(app):
   cur = conexion.cursor()
   cur.execute("INSERT INTO usuarios (nombre , cedula) VALUES(?,?)",(app.entry_nombre.get(), app.entry_identificacion.get()))
   conexion.commit()
-  # app.entry_nombre.get(0, tk.END) añadir este reseteo de entry
   messagebox.showinfo("Solicitud", "Usuario creado con exito")
   mostrar_usuarios(app)
   app.entry_nombre.delete(0, tk.END)
@@ -135,15 +132,4 @@ def actualizar_usuario (app):
       top.destroy()
   else:
     messagebox.showerror("Error", "Debe seleccionar un usuario para poder actualizar los datos")
-
-
-
-# def editar_usuario ():
-#   name = input("Ingrese su nombre: ")
-#   cedula = input("Ingrese su cedula: ")
-#   cur = conexion.cursor()
-#   cur.execute("UPDATE usuarios SET nombre= ?, cedula = ? WHERE ID = 13",(name, cedula,))
-#   conexion.commit()
-  
-
 
