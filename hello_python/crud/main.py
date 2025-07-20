@@ -2,7 +2,7 @@ import tkinter as tk
 import ttkbootstrap as tkb
 from ttkbootstrap.constants import * 
 from tkinter import ttk
-from database import create_user , search_user, mostrar_usuarios , obtener_item , eliminar_usuario
+from database import create_user , search_user, mostrar_usuarios , obtener_item , eliminar_usuario, actualizar_usuario
 
 
 class App :
@@ -10,6 +10,7 @@ class App :
     def __init__(self):
         self.root = tkb.Window(themename="superhero")
         self.root.title("Gestor de usuarios")
+        self.root.resizable(False, False)
         
         
         #notebook
@@ -19,32 +20,36 @@ class App :
         
         # Pestaña crear usuario
         self.pestaña_crear = tk.Frame(self.pestañas)
+        self.pestaña_crear.grid_columnconfigure(0 , weight= 1)
+        self.pestaña_crear.grid_columnconfigure(1 , weight= 1)
+        self.pestaña_crear.grid_columnconfigure(2 , weight= 1)
+        
+        
+        self.title_crear = tk.Label(self.pestaña_crear,text="Creación de usuario")
+        self.title_crear.grid(row= 0 , column= 0, columnspan= 3, sticky= "ew", pady= (30, 20), padx=(145 ,20))
+        self.title_crear.config(font=("Arial", 18, "bold"), fg= "#5597DD", anchor= "center", justify= "center")
         
         #nombre entrada
         self.lbl_nombre = tk.Label(self.pestaña_crear, text="Nombre: ")
-        self.lbl_nombre.grid(row= 0 , column= 0 ,pady= 20 )
+        self.lbl_nombre.grid(row= 1 , column= 0 ,pady= 20 )
         
         self.entry_nombre = tk.Entry(self.pestaña_crear)
-        self.entry_nombre.grid(row= 0 , column=1)
+        self.entry_nombre.grid(row= 1 , column=1)
         
         #Identificacion entrada
         self.lbl_identifiacion = tk.Label(self.pestaña_crear, text="Cedula/DNI: ")
-        self.lbl_identifiacion.grid(row= 0 , column= 2, pady= 20)
+        self.lbl_identifiacion.grid(row= 1 , column= 2, pady= 20)
         
         self.entry_identificacion = tk.Entry(self.pestaña_crear)
-        self.entry_identificacion.grid(row= 0 , column= 3)
+        self.entry_identificacion.grid(row= 1 , column= 3)
         
         #Botones crear y cancelar
         
         self.btn_crear = tkb.Button(self.pestaña_crear, text= "Crear", command= lambda: create_user(self) ,bootstyle = SUCCESS, width= 20)
-        self.btn_crear.grid(row= 1 , column= 1, padx= (40 , 0) ,sticky="W")
+        self.btn_crear.grid(row= 2 , column= 1, padx= (40 , 0) ,pady=(30, 0),sticky="W")
         
         self.btn_cancelar = tkb.Button(self.pestaña_crear, text= "Cancelar", bootstyle = DANGER, width= 20)
-        self.btn_cancelar.grid(row= 1 , column= 2, padx= (40 , 0) ,sticky="E")        
-        
-        
-        self.relleno2 = ttk.Label(self.pestañas, text="")
-        self.relleno3 = ttk.Label(self.pestañas, text="")
+        self.btn_cancelar.grid(row= 2 , column= 2, padx= (40 , 0),pady=(30 ,0) ,sticky="E")        
         
         
         #Agregar pestañas al notebook
@@ -86,18 +91,22 @@ class App :
         self.pestaña_listado_usuarios.grid_columnconfigure(2, weight= 1)
         
         
+        
         self.title_listado = tk.Label(self.pestaña_listado_usuarios, text="Listado de usuarios registrados")
         self.title_listado.grid(row= 0 , column= 0, columnspan= 3 , sticky="ew", pady= 20)
         self.title_listado.config(font=("Arial", 16 , "bold"))
         
-        self.button_seleccionado = tk.Button (self.pestaña_listado_usuarios, text="Eliminar" , command= lambda: eliminar_usuario(self))
-        self.button_seleccionado.grid (row= 0, column=2, columnspan= 3 , sticky="ew")
+        self.button_edit = tkb.Button(self.pestaña_listado_usuarios, text="Editar", command= lambda: actualizar_usuario(self), bootstyle = WARNING)
+        self.button_edit.grid(row= 1 , column=0, sticky="ew" , pady= (15, 15), padx=(80, 20))
+
+        self.button_eliminar = tkb.Button (self.pestaña_listado_usuarios, text="Eliminar" , command= lambda: eliminar_usuario(self), bootstyle= SUCCESS)
+        self.button_eliminar.grid (row= 1, column=1, sticky="we" , pady= (15, 15), padx=(150, 20))
         
         
         #Listado de usuarios
         
         self.treeview_usuarios = ttk.Treeview(self.pestaña_listado_usuarios)
-        self.treeview_usuarios.grid(row= 1 , column= 0 , columnspan= 3, sticky="ew ")
+        self.treeview_usuarios.grid(row= 2 , column= 0 , columnspan= 3, sticky="ew ")
         
         
         self.treeview_usuarios["columns"] = ("1" , "2" , "3")
