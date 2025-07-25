@@ -2,7 +2,7 @@ import tkinter as tk
 import ttkbootstrap as tkb
 from ttkbootstrap.constants import * 
 from tkinter import ttk
-from database import create_user , search_user, mostrar_usuarios , obtener_item , eliminar_usuario, actualizar_usuario
+from database import create_user , search_user, mostrar_usuarios , eliminar_usuario, actualizar_usuario
 
 
 class App :
