@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularios</title>
+</head>
+<body>
+    <form action="#" method="post" name="myForm" id="formulario">
+
+        <label for="usuario">Usuario</label> <br>
+
+        <input type="text" name="usuario" id="usuario"><br>
+
+        <label for="contraseña">Contraseña</label> <br>
+
+        <input type="password" name="contraseña" id="contraseña"> <br> <br>
+
+        <!-- botones -->
+        <input type="submit" value="Iniciar Sesion">
+        <input type="reset" value="Cancelar">
+    </form>
+    
+    <div class="error-message"></div>
+
+    <br><br><br>
+
+    <!-- Formulario 2 -->
+
+    <h2>Segundo formulario</h2>
+
+    <form action="" method="post" name="myForm2" id="myForm2">
+        <label for="entryValor1" id="valor1">primer valor</label> <input type="text" id="entryValor1"> <br><br> 
+
+        <label for="entryValor2" id="valor2">segundo valor</label> <input type="text" id="entryValor2"> <br><br>
+
+        <select name="name" id="selector" >
+            <option value="1">suma</option>
+            <option value="2">resta</option>
+            <option value="3">multiplicacion</option>
+            <option value="4">division</option>
+            <option value="" selected >seleccione una opcion</option>
+        </select> <br><br>
+
+        <input type="submit" value="sumar">
+        <input type="reset" value="cancelar">
+
+        <div class="resultado"></div>
+    </form>
+
+    <script src="/Javascript/DOM/forms/form.js"></script>
+</body>
+</html>
