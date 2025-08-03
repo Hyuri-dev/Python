@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import products , users, basic_auth_user
+from routers import products , users, basic_auth_user, jwt_auth_user
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
@@ -14,6 +14,7 @@ async def root ():
 app.include_router(products.router)
 app.include_router(users.router)
 app.include_router(basic_auth_user.router)
+app.include_router(jwt_auth_user.router)
 app.mount("/static", StaticFiles(directory="statics"), name="static")  #Mount nos declara el path donde va a estar esos recursos y su nombre por donde se ira a buscar en el api
 #si necesitaramos montar archivos estaticos en nuestro api, podria ser un pdf, una imagen, etc
 # Aplicariamos el mount desde el app y tambien a su vez llamariamos a importar con fastapi el atributo staticfiles#
