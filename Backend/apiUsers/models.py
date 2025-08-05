@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String,Text, DateTime # importamos los tipos de columnas para las tablas
+from sqlalchemy import Column, ForeignKey, Integer, String,Text, DateTime # importamos los tipos de columnas para las tablas
 from sqlalchemy.orm import relationship # Para relacionar tablas o nuestras clases en este caso
 from sqlalchemy.sql import func
 from database import Base
@@ -11,7 +11,7 @@ class User (Base): # Creamos la tabla usuario
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     #Relacion con la tabla users y items de uno a muchos
-    itemsr =  relationship("Item", back_populates="owner")
+    items =  relationship("Item", back_populates="owner")
 
 class Item(Base):
     __tablename__ = "items"
@@ -22,6 +22,5 @@ class Item(Base):
     
     #Relacion con la tabla items y usuarios de uno a uno 
     owner = relationship("User", back_populates="items")
-    
-    
+
 
