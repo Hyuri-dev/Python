@@ -6,8 +6,34 @@ def run():
   db.session.add(producto)
   db.session.commit()
   print(f"se creo el producto correctamente: {producto.id}")
+  
+  
+  
+def listar ():
+  consultar = db.session.query(Producto).all()
+  print(f'Productos: {consultar}')
+
+def buscar (id):
+  search = db.session.get(Producto, id)
+  print(search)
+  return search
+
+def eliminar (id):
+  product = db.session.get(Producto, id)
+  if product is None:
+    print("No encontrado")
+  else:
+    db.session.delete(product)
+    print("Eliminated successfully")
+    db.session.commit()
+    
+    
 
 
 if __name__ == '__main__':
   db.base.metadata.create_all(db.engine)
-  run()
+  # run()
+  listar()
+  buscar(input("Ingrese el id: "))
+  eliminar(input("Ingrese el id: "))
+  
