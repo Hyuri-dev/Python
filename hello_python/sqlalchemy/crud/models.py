@@ -7,7 +7,7 @@ class Usuarios(db.base):
   __tablename__ = 'usuarios'
   id = Column(Integer, primary_key= True, index= True)
   nombre = Column(String, nullable= False, index= True)
-  identifiacion = Column(Integer, unique= True, index=True)
+  identificacion = Column(Integer, unique= True, index=True)
   fecha_creación = Column(DateTime(timezone=True), server_default=func.now())
   
   productos = relationship("Productos", back_populates="propietario")
