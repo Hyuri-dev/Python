@@ -1,9 +1,9 @@
-import db
+import db1
 from sqlalchemy import Column, Integer, String , Float
 
 #modelo de nuestra tabla productos
 
-class Producto(db.base):
+class Producto(db1.base):
   __tablename__ = 'producto'
   id = Column(Integer, primary_key = True )
   nombre = Column(String, nullable = False)
