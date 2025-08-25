@@ -1,4 +1,8 @@
 import flet as ft
+import db
+from models import Users
+
+db.Base.metadata.create_all(db.engine)
 
 class Login (ft.Column):
   def __init__(self,page):
@@ -33,15 +37,16 @@ class Login (ft.Column):
     )
   
   def verificar_credenciales(self,e):
-    if self.entry_user.value == "aquiles" and self.entry_password.value == "admin":
+    usuario = self.entry_user.value
+    password = self.entry_password.value
+    user = db.session.query(Users).filter_by(usuario = usuario , password = password).first()
+    if user:
       self.notificacion.value = "Has iniciado sesión correctamente, Bienvenido!"
       self.notificacion.color = "green"
     else:
       self.notificacion.value = "Credenciales incorrectas"
       self.notificacion.color = "red"
     self.notificacion.update()
-  
-  
 
 def main(page):
   page.title = "Login"
