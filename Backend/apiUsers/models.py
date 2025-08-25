@@ -2,10 +2,12 @@ from sqlalchemy import Column, ForeignKey, Integer, String,Text, DateTime # impo
 from sqlalchemy.orm import relationship # Para relacionar tablas o nuestras clases en este caso
 from sqlalchemy.sql import func
 from database import Base
-
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
 class User (Base): # Creamos la tabla usuario 
-    __tablename__ = "users" #declaramos el nombre de la tabla 
-    id = Column(Integer, primary_key=True, index=True)
+    __tablename__ = "users" 
+    # id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id  = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
