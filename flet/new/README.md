@@ -1,4 +1,4 @@
-# Flet app
+# New app
 
 ## Run the app
 
@@ -79,13 +79,3 @@ flet build windows -v
 ```
 
 For more details on building Windows package, refer to the [Windows Packaging Guide](https://flet.dev/docs/publish/windows/).
-
-### Android
-
-Para crear un APK Hay que utilizar el comando
-
-flet build apk --verbose
-
-y si queremos ver dicha app en nuestro tlf sin tener que hacer el apk utilizamos
-
-flet run --android main.py
