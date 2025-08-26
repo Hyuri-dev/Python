@@ -32,7 +32,7 @@ class MyApp(ft.Column) :
         self.counter +=1
         self.txt_counter.value =f"{self.counter}"
         if self.counter > 5:
-            self.mensaje.value = "Gracias por probar la app, te amo ❤️"
+            self.mensaje.value = "Gracias por probar la app, ahora esta centrado , te amo ❤️"
         self.txt_counter.update
         e.page.update()
 
