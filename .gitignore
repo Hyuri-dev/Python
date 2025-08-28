@@ -195,3 +195,6 @@ cython_debug/
 .cursorindexingignore
 
 .reflex/login/.venv
+.xlsx
+.xlsm
+.xls
