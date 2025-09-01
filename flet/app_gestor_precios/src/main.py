@@ -4,18 +4,11 @@ class myApp(ft.Column):
     def __init__(self, page):
         super().__init__()
         self.page = page
-        self.vista_productos = ft.Column(
-            [
-                ft.Container(
-                    content=
-                    ft.Text("Este es un contenedor", color="#272727"),
-                    bgcolor="#f8ff96", width= 600 , height= 800)],
-            scroll=ft.ScrollMode.ALWAYS, height= 800, width= 500)
-        self.width = 500
+        self.vista_productos = ft.Column(scroll=ft.ScrollMode.ALWAYS, height= 800, width= 500)
+        self.width = 900
         
-
         # Widgets
-        self.text_bar = ft.TextField(hint_text="  Escriba un producto " , border_radius=30, border_color="#b9e3ff")
+        self.text_bar = ft.TextField(hint_text="  Buscar un producto " , border_radius=30, border_color="#b9e3ff")
         self.button_create = ft.FilledButton(
             text="Crear Producto", 
             on_click=lambda e: self.page.open(self.dlg), 
@@ -53,9 +46,22 @@ class myApp(ft.Column):
         )
         self.controls = [
             ft.Row(controls=[self.text_bar, self.button_create]),
-            self.vista_productos
+            ft.Container(
+                content=self.vista_productos,
+                bgcolor="#2b2b2b",
+                width= 1200,
+                height=900,
+                border_radius= 22,
+                alignment=ft.alignment.center,
+                margin= ft.margin.only(top= 30),
+                padding= ft.padding.only(left= 40, right=10, top= 10 , bottom= 10),
+                expand=True
+                ),
+                
+            
+            
         ]
-    
+
     # ----- METODOS -----
     
     def mostrar_mensaje(self,e):
@@ -75,8 +81,13 @@ class myApp(ft.Column):
         self.mensaje.value = "Producto creado e ingresado con exito!"
         
         # Lógica para agregar el producto a la vista
-        self.vista_productos.controls.append(
-            ft.Text(f"{producto}  {precio}  {categoria}  {peso}  {ubicacion}", size= 40)
+        self.vista_productos.controls.append( ft.Row(
+            controls=[
+                ft.Text(f"{producto}  {precio}  {categoria}  {peso}  {ubicacion}", size= 25),
+                ft.IconButton(icon=ft.Icons.CREATE_OUTLINED), 
+                ft.IconButton(icon=ft.Icons.DELETE_OUTLINE_ROUNDED)
+            ]
+        )
         )
         
         self.input_producto.value =""
