@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 import crud , models, schemas
 from database import SessionLocal, engine
 from routers import users
+from modelsturso import Foo
 
 models.Base.metadata.create_all(bind= engine)
 #Creamos una instancia del objeto fastapi
@@ -80,14 +82,8 @@ def  delete_item ( item_id: int , db: Session = Depends(get_db)):
         raise HTTPException(status_code= 404, detail="Item not found")
     return{"detail": "Item deleted succesfully"}
 
-
-
-
-
-
-
-
-
-
-
-# app.include_router(users.router)
+@app.get("/tursoget")
+def home(db: Session = Depends(get_db)):
+    stmt = select(Foo)
+    items = db.scalars(stmt).all()
+    return items  # Devuelve los resultados al cliente
