@@ -26,11 +26,12 @@ def obtener_bcv():
             etiqueta_strong = div.find('strong') #buscamos la etiqueta strong que contiene los valores
             
             if etiqueta_strong:
-                tasa_bcv = etiqueta_strong.get_text(strip=True)
-                tasa_formateada = tasa_bcv.replace("," , ".")
-                tasa = float(tasa_formateada)
-                print(f"Valor encontrado: {tasa}")
-                return tasa
+              ultimo_valor = divs_tasas[-1] #Buscamos el valor que queremos
+              tasa_bcv = ultimo_valor.get_text(strip=True)
+              tasa_formateada = tasa_bcv.replace("," , ".")
+              tasa_bcv = float(tasa_formateada)
+              print(f"Valor encontrado: {tasa_bcv}")
+              return tasa_bcv
                 
             else:
                 print("Una de las etiquetas <div> no contenia la etiqueta <strong>")
