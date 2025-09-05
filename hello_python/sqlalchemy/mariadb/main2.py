@@ -2,6 +2,8 @@ import db2
 from models2 import Usuarios , Productos
 
 
+
+
 def crear_usuario (nombre, identificacion):
   cursor = Usuarios(nombre, identificacion)
   db2.session.add(cursor)
