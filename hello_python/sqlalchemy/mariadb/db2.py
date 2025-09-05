@@ -6,7 +6,7 @@ import mariadb
 usuario="jodomode_jpadmin"
 contraseña="soulkidd0809@"
 host = "147.135.104.21"
-db = "jodomode_example.bd"
+db = "jodomode_example"
 
 conn_string = f"mariadb+mariadbconnector://{usuario}:{contraseña}@{host}:3306/{db}"
 
