@@ -194,3 +194,5 @@ cython_debug/
 .cursorindexingignore
 
 .reflex/login/.venv
+
+database.ini
