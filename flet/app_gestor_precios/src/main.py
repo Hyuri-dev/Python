@@ -18,8 +18,7 @@ class myApp(ft.Column):
             color='#ffffff'
         )
         
-        #Modal crear productos
-        # self.input_dialog = ft.TextField(hint_text="Escriba un mensaje para la modal")
+        #Widgets para la Modal crear productos
         self.input_producto = ft.TextField(label="🏷️Nombre", width= 300)
         self.input_precio = ft.TextField(label="💲Precio")
         self.input_categoria = ft.TextField(label="🗂️Categoria")
@@ -43,6 +42,20 @@ class myApp(ft.Column):
                 ],
             width= 250, height=400),
             alignment= ft.alignment.center
+        )
+        self.dlg_edit = ft.AlertDialog(
+            title ="Editar producto✍️",
+            content= ft.Column(
+                [
+                    self.input_producto,
+                    self.input_precio,
+                    self.input_categoria,
+                    self.input_peso,
+                    self.input_ubicacion,
+                    ft.ElevatedButton("Editar Producto", on_click=self.crear_producto),
+                    ft.ElevatedButton("Limpiar Formulario", icon=ft.Icons.DELETE, on_click=self.limpiar_campos_producto),
+                    self.mensaje
+                ])
         )
         self.controls = [
             ft.Row(controls=[self.text_bar, self.button_create]),
@@ -74,7 +87,7 @@ class myApp(ft.Column):
     def crear_producto(self, e):
         # Aquí usas los valores de los campos para crear el producto
         producto = self.input_producto.value  # Ejemplo: obtener el texto del campo
-        precio = self.input_categoria.value
+        precio = self.input_precio.value
         categoria = self.input_categoria.value
         peso = self.input_peso.value
         ubicacion = self.input_ubicacion.value
@@ -84,7 +97,7 @@ class myApp(ft.Column):
         self.vista_productos.controls.append( ft.Row(
             controls=[
                 ft.Text(f"{producto}  {precio}  {categoria}  {peso}  {ubicacion}", size= 25),
-                ft.IconButton(icon=ft.Icons.CREATE_OUTLINED), 
+                ft.IconButton(icon=ft.Icons.CREATE_OUTLINED, on_click =lambda e:self.page.open(self.dlg_edit)), 
                 ft.IconButton(icon=ft.Icons.DELETE_OUTLINE_ROUNDED)
             ]
         )
