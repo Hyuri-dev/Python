@@ -1,5 +1,42 @@
 import flet as ft
 
+class Items (ft.Column):
+    def __init__(self, item_name, item_price , item_category, item_weight, item_location, item_delete):
+        super().__init__()
+        
+        self.item_name = item_name
+        self.item_price = item_price
+        self.item_category = item_category
+        self.item_weight = item_weight
+        self.item_location = item_location
+        self.item_delete = item_delete
+        self.edit_item = None
+        
+        #Widgets
+        self.diplay_item = ft.Text(f"{self.item_name} {self.item_price} {self.item_category} {self.item_weight} {self.item_location}", size = 24)
+        self.display_view = ft.Row(
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            vertical_alignment = ft.CrossAxisalignment.CENTER,
+            controls=[
+                self.display_item,
+                ft.Row(
+                    spacing=0,
+                    controls=[
+                        ft.IconButton(
+                            icon=ft.Icons.CREATE_OUTLINED,
+                            tooltip="EDITAR ITEM",
+                        ),
+                        ft.IconButton(
+                            icon=ft.Icons.DELETE_OUTLINED,
+                            tooltip="BORRAR ITEM",
+                        ),
+                    ],
+                ),
+            ],
+        )
+        
+        
+
 class myApp(ft.Column):
     def __init__(self, page):
         super().__init__()
@@ -44,7 +81,7 @@ class myApp(ft.Column):
             alignment= ft.alignment.center
         )
         self.dlg_edit = ft.AlertDialog(
-            title ="Editar producto✍️",
+            title ="Editar producto ✍️",
             content= ft.Column(
                 [
                     self.input_producto,
