@@ -10,7 +10,24 @@ class Items (ft.Column):
         self.item_weight = item_weight
         self.item_location = item_location
         self.item_delete = item_delete
-        self.edit_item = None
+        self.edit_item = ft.AlertDialog(
+            title="Editar Producto ✍️",
+            content = ft.Column(
+                [
+                    self.input_producto,
+                    self.input_precio,
+                    self.input_categoria,
+                    self.input_peso,
+                    self.input_ubicacion,
+                ]
+            )
+        )
+        
+        self.input_producto = ft.TextField(label="🏷️Nombre", width= 300)
+        self.input_precio = ft.TextField(label="💲Precio")
+        self.input_categoria = ft.TextField(label="🗂️Categoria")
+        self.input_peso = ft.TextField(label="⚖️Peso")
+        self.input_ubicacion = ft.TextField(label="📍Ubicacion")
         
         #Widgets
         self.diplay_item = ft.Text(f"{self.item_name} {self.item_price} {self.item_category} {self.item_weight} {self.item_location}", size = 24)
@@ -35,6 +52,13 @@ class Items (ft.Column):
             ],
         )
         
+        self.edit_view = ft.Row (
+            visible= False,
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            vertical_alignment =ft.CrossAxisAlignment.CENTER,
+            controls= [
+            ]
+        )
         
 
 class myApp(ft.Column):
