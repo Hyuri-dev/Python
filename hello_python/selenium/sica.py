@@ -36,20 +36,34 @@ texto = codigo_elemento.text
 
 codigo = re.search(r"CÓDIGO PARA CONTINUAR\. (\d+)", texto)
 
+time.sleep(1.5)
+
 if codigo:
   codigo_acceso = codigo.group(1)
   input_codigo = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "form-control")))
   input_codigo.send_keys(codigo_acceso)
 else:
   print("No se encontro el codigo en el texto.")
-
-opcion = int(input("Seleccione una opcion: "))
-
-if opcion == 1:
-  wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".bt.btn-primary"))).click()
-elif opcion == 2:
-  wait.until(EC.visibility_of_element_located((By.LINK_TEXT, "CERRAR SESIÓN"  ))).click()
   
 
+BOTON_ACEPTAR_CODIGO = (By.XPATH, "//button[contains(text(), 'VEHICULAR')]")
+
+wait = WebDriverWait(driver, 10)
+
+try:
+    # 3. Espera hasta que el elemento sea clickeable
+    boton = wait.until(EC.element_to_be_clickable(BOTON_ACEPTAR_CODIGO))
+    
+    # 4. Haz clic
+    boton.click()
+    print("¡Clic en el botón VEHICULAR exitoso!")
+    
+except Exception as e:
+    # Si falla, muestra el error
+    print(f"Error al intentar hacer clic en el botón: {e}")
+
+
 input("Presiona enter para cerrar la prueba")
+
+
 driver.quit()
