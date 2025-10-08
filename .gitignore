@@ -194,7 +194,3 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-.reflex/login/.venv
-.xlsx
-.xlsm
-.xls
