@@ -55,16 +55,56 @@ textarea.send_keys("1564")
 
 time.sleep(1.5)
 
+#Selecciona el input y escribe el codigo del cliente
 input_codigo = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".form-control.todo-list-input.input-event")))
 input_codigo.send_keys("123456")
 
+#Selecciona el boton buscar
 boton_buscar = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".add.btn.btn-primary.todo-list-add-btn")))
 boton_buscar.click()
 
-resultado = wait.until(EC.visibility_of_element_located(
-    (By.CSS_SELECTOR, ".d-flex.align-items-center.py-1.border-bottom.mt-1")
+#Selecciona el cliente que salio en caso de que haya encontrado uno
+resultado = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".d-flex.align-items-center.py-1.border-bottom.mt-1")
 ))
 resultado.click()
+
+time.sleep(1.5)
+
+# campo_cedula_chofer = wait.until(EC.visibility_of_element_located((By.ID, "data.BTBzOW5WRVUrRGdVZjlJM05EcllSQT09")))
+# campo_cedula_chofer.send_keys("v7249487")
+
+xpath_cedula = '//input[@title="Cédula"]'
+elemento_cedula = driver.find_element(By.XPATH, xpath_cedula)
+elemento_cedula.send_keys("v7249487")
+
+time.sleep(1)
+
+BUTTON_XPATH = '//input[@title="Cédula"]/following::button[text()="Buscar"][1]'
+espera_maxima = 10 # 10 segundos
+
+try:
+    # 2. Inicializar la espera
+    wait = WebDriverWait(driver, espera_maxima)
+
+    # 3. Esperar a que el elemento sea Clickeable
+    # La condición EC.element_to_be_clickable() espera que el elemento esté presente, visible
+    # Y lo más importante, habilitado (no deshabilitado).
+    elemento_boton = wait.until(
+        EC.element_to_be_clickable((By.XPATH, BUTTON_XPATH))
+    )
+
+    # 4. Interactuar con el elemento
+    elemento_boton.click()
+    print("✅ Clic realizado en el botón 'Buscar'.")
+
+except TimeoutError:
+    print(f"❌ Error: El botón 'Buscar' no se volvió clickeable después de {espera_maxima} segundos.")
+except Exception as e:
+    print(f"❌ Ocurrió un error al intentar hacer clic: {e}")
+    
+boton_buscar = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".add.btn.btn-primary.todo-list-add-btn")))
+    
+
 
 
 
