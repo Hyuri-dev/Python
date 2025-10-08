@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+}
+
+.text-field {
+  width: 370px;
+  height: 200px;
+  border: none;
+  border-radius: 20px;
+  background-color: #f2f2f2;
+  margin-left: 2px;
+}
+
+h1,
+h2 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.container-child {
+  width: 360px;
+  align-content: center;
+}
+
+.container-father {
+  background-color: rgba(165, 42, 42, 0);
+  width: 400px;
+  height: 350px;
+}
+
+.buttom-submit {
+  align-items: center;
+  position: absolute;
+  top: 63%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 80%;
+  height: 40px;
+
+  border-radius: 8px;
+  border: none;
+  background-color: #141414;
+  color: white;
+}

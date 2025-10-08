@@ -137,6 +137,8 @@ class App :
         self.pestañas.add(self.pestaña_listado_usuarios, text="Lista de usuarios")
         
         mostrar_usuarios(self)
+
+        self.treeview_usuarios.bind("<Double-1>", lambda event: actualizar_usuario(self)) #Evento doble click para editar usuario.
         self.root.mainloop()
         
         

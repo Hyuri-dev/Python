@@ -1,12 +1,12 @@
 from pydantic import BaseModel, EmailStr
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 
 class ItemBase (BaseModel):
     title: str
-    # description = Optional[str] = None
+    description: Optional[str] = None
 
-class ItemCreate (BaseModel):
+class ItemCreate (ItemBase):
     pass
 
 class Item (ItemBase):

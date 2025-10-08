@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import products , users, basic_auth_user, jwt_auth_user
+from .routers
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
