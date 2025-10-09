@@ -70,9 +70,7 @@ resultado.click()
 
 time.sleep(1.5)
 
-# campo_cedula_chofer = wait.until(EC.visibility_of_element_located((By.ID, "data.BTBzOW5WRVUrRGdVZjlJM05EcllSQT09")))
-# campo_cedula_chofer.send_keys("v7249487")
-
+#----------- INPUT CEDULA -----------
 xpath_cedula = '//input[@title="Cédula"]'
 elemento_cedula = driver.find_element(By.XPATH, xpath_cedula)
 elemento_cedula.send_keys("v7249487")
@@ -105,13 +103,88 @@ except Exception as e:
 boton_buscar = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".add.btn.btn-primary.todo-list-add-btn")))
     
 
+PATH_CONDUCTOR = "(//div[@class='d-flex align-items-center py-1 border-bottom mt-1'])[1]"
 
+try:
+  wait = WebDriverWait(driver, espera_maxima)
+  elemento_conductor = wait.until(EC.visibility_of_element_located((By.XPATH, PATH_CONDUCTOR)))
+  elemento_conductor.click()
+  print("✅ Resultado de conductor seleccionado con éxito.")
+  
+except TimeoutError:
+  print(f"❌ Error: El elemento resultado de la búsqueda no apareció después de {espera_maxima} segundos")
+except Exception as e:
+  f"❌ Ocurrió un error al intentar hacer clic en el elemento: {e}"
+
+
+#----------- INPUT VEHICULO -----------
+
+XPATH_VEHICULO = '//input[@title="Placa"]'
+input_vehiculo = driver.find_element(By.XPATH, XPATH_VEHICULO)
+input_vehiculo.send_keys("a68aj4d")
+
+
+BUSCAR_VEHICULO_PATH ='//input[@title="Placa"]/following::button[text()="Buscar"][1]'
+boton_buscar_vehiculo = wait.until(EC.element_to_be_clickable((By.XPATH, BUSCAR_VEHICULO_PATH)))
+boton_buscar_vehiculo.click()
+
+RESULTADO_VEHICULO_PATH = "(//div[@class='d-flex align-items-center py-1 border-bottom mt-1'])[1]"
+seleccionar_vehiculo = wait.until(EC.visibility_of_element_located((By.XPATH, RESULTADO_VEHICULO_PATH)))
+seleccionar_vehiculo.click()
+
+#----------- SELECCION DE PRODUCTO -----------
+
+# Usamos la clase más distintiva y estable del contenedor
+SPAN_SELECTOR = 'span.select2-selection.select2-selection--single'
+espera_maxima = 10 
+
+try:
+    wait = WebDriverWait(driver, espera_maxima)
+
+    # Esperar a que el span sea clickeable
+    span_element = wait.until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, SPAN_SELECTOR))
+    )
+
+    # Hacer clic para ABRIR el desplegable
+    span_element.click()
+    print("✅ Clic realizado en el span Select2. Lista desplegable abierta.")
+
+except Exception as e:
+    print(f"❌ Error al intentar abrir el desplegable Select2: {e}")
+
+# Reemplaza 'OPCION_DESEADA' con el texto visible que necesitas
+OPCION_TEXTO = "PASTAS ALIMENTICIAS LEY ORGANICA DE PRECIO JUSTO" 
+
+# XPath genérico para Select2: busca un <li> con la clase de resultado y el texto.
+OPCION_XPATH = f'//li[contains(@class, "select2-results__option") and text()="{OPCION_TEXTO}"]'
+
+try:
+    # Esperar a que la opción aparezca y sea clickeable
+    opcion_element = wait.until(
+        EC.element_to_be_clickable((By.XPATH, OPCION_XPATH))
+    )
+
+    # Hacer clic en la opción para seleccionarla y cerrar el desplegable
+    opcion_element.click()
+    print(f"✅ Opción '{OPCION_TEXTO}' seleccionada con éxito.")
+
+except Exception as e:
+    print(f"❌ Error al intentar seleccionar la opción '{OPCION_TEXTO}': {e}")
 
 
 
 
 #link del area de despacho https://sica.sunagro.gob.ve/despachos
 #link del area de registro de despacho https://sica.sunagro.gob.ve/despachos/registrar
+
+option = input('Ingrese una opcion: ')
+
+match option:
+  case 1:
+    driver.get("https://sica.sunagro.gob.ve/despachos/registrar")
+
+
 
 
 # Mostrar el título de la página para confirmar que se cargó
