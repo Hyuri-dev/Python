@@ -16,11 +16,11 @@ class myApp(ft.Column):
         self.controls = [ft.Column(
             controls=[ft.Container(content=(ft.Column(controls= 
                                                       [ft.Row(controls=[ft.Text(value=f"Calculadora de retenciones ", size= 30, text_align="CENTER", width= 200 ), ft.Icon(name=ft.Icons.CALCULATE, size= 60)]),
-                                                       self.monto, self.montoDeRetencion, self.montoARetener ,ft.Button(text="Calcular", width=300, on_click= self.CalcularRetencion), ft.Button(text="Limpiar",icon=ft.Icons.CLEAR, width=300, on_click=self.limpiarCampos)])), width= 350 , padding= 30 ) ]
+                                                      self.monto, self.montoDeRetencion, self.montoARetener ,ft.Button(text="Calcular", width=300, on_click= self.CalcularRetencion), ft.Button(text="Limpiar",icon=ft.Icons.CLEAR, width=300, on_click=self.limpiarCampos)])), width= 350 , padding= 30 ) ]
         )]
 
 
-        # Metodos / funciones de la appp
+        # Metodos / funciones de la app
 
     def CalcularRetencion(self,e):
       
@@ -56,7 +56,7 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     
-    app = myApp(page)  # Solo pasamos 'page' como argumento
+    app = myApp(page)
     page.add(app)
     page.bgcolor="#141414"
     page.update()
