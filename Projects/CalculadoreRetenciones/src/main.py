@@ -32,12 +32,17 @@ class myApp(ft.Column):
     def __init__(self, page):
         super().__init__()
         self.page = page
-        self.monto = ft.TextField(label="Monto" ,width= 300, border_color="blue", keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
+        self.width = 350
+        self.spacing = 15
+        
+        self.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+        
+        self.monto = ft.TextField(label="Monto del IVA (Bs.)" ,width= 300, border_color="blue", keyboard_type=ft.KeyboardType.NUMBER, hint_text="Ej: 245.23")
         self.montoDeRetencion = ft.TextField(hint_text=f"Monto a Pagar Bs " ,width= 300 , read_only=True, border_color="GREEN", keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
         self.montoARetener = ft.TextField(hint_text=f"Monto a Retener Bs " ,width= 300 , read_only=True, border_color="ORANGE", keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
         self.descripcion = ft.Text(value= "Aqui encontraras una explicacion de esta calculadora sencilla para sacar las retenciones de tus facturas.", width= 300, size= 14)
 
-        # Widgets del tutorial:.
+        # Widgets del tutorial:
 
         self.dialogHelp = ft.AlertDialog(
            open=True,
@@ -55,7 +60,7 @@ class myApp(ft.Column):
 
         self.controls = [ft.Column(
             controls=[ft.Container(content=(ft.Column(controls= 
-                                                      [ft.Row(controls=[ft.Text(value=f"Calculadora de retenciones ", size= 30, text_align="CENTER", width= 200 ), ft.Icon(name=ft.Icons.CALCULATE, size= 60)]),
+                                                      [ft.Row(controls=[ft.Text(value=f"Calculadora de Retenciones", size= 25, text_align="center", width= 200 ), ft.Icon(name=ft.Icons.CALCULATE, size= 40)]),
                                                       self.monto, self.montoDeRetencion, self.montoARetener ,ft.Button(text="Calcular", width=300, on_click= self.CalcularRetencion), ft.Button(text="Limpiar",icon=ft.Icons.CLEAR, width=300, on_click=self.limpiarCampos), ft.Button(text="Ayuda",icon=ft.Icons.HELP ,width=300,on_click=lambda e: self.page.open(self.dialogHelp))])), width= 350 , padding= 30 ) ]
         )]
 
@@ -96,6 +101,7 @@ def main(page: ft.Page):
     page.title = "Calculadora de Retenciones"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.theme_mode = ft.ThemeMode.SYSTEM
     
     app = myApp(page)
     page.add(app)
