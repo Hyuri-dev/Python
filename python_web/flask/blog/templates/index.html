@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hyuri Blog</title>
-  </head>
-  <body>
-    {% extends "base_template.html" %} {% block title %}Tutorial Flask:
-    Miniblog{% endblock %} {% block content %} {{ num_posts }} posts {% endblock
-    %}
-  </body>
-</html>
+{% extends "base_template.html" %} {% block title %}Tutorial Flask: Miniblog{%
+endblock %} {% block content %}
+<ul>
+  {% for post in posts %}
+  <li>{{ post.title }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
