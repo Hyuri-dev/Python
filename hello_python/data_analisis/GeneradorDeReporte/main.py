@@ -1,4 +1,6 @@
 import pandas as pd
+from rich.console import Console
+from rich.table import Table
 
 # ----------- Headers del dataframe nuevo -----------
 nombres_limpios = [
@@ -8,7 +10,7 @@ nombres_limpios = [
 
 #  Data frame 
 df = pd.read_csv(
-    r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\Productosvendidos.TXT",
+    r"C:\Users\Jefferson\desarrollo python\hello_python\Python\hello_python\data_analisis\GeneradorDeReporte\Productosvendidos_PRUEBA.TXT",
     sep='\t', 
     encoding='latin-1', 
     names=nombres_limpios, #Nombres nuevos para el header
@@ -19,6 +21,39 @@ df = pd.read_csv(
     dtype={'Codigo': str}    #Codigo tiene que ser leido como str y no como objeto
 )
 
+
+productos = {
+  "Pasta Allegri": "ALLEGRI",
+  "Pasta Horizonte": "HORIZONTE",
+  "Pasticho Allegri": "PASTICHO ALLEGRI",
+  "Pasticho Mi Casa": "PASTICHO MI CASA",
+  "Harina de Trigo":  "HARINA DE TRIGO MAR",
+  "Devoluciones": "ITEM SIN EXISTENCIA"
+}
+
+reporte_resumen = []
+
+for nombre_producto , texto_buscar in productos.items():
+  filtro = df[df['Descripcion'].str.contains(texto_buscar, case=False, na=False)]
+  total_cantidad = filtro['Cantidad'].sum()
+
+  reporte_resumen.append({
+    "Producto/Categoria": nombre_producto,
+    "Cantidad Total": total_cantidad
+  })
+
+filtro_adobo = df[df['Codigo']== '010003']
+reporte_resumen.append({
+  'Producto / Categoria': 'Adobo La Comadre 200Gr',
+  'Cantidad Total': filtro_adobo['Cantidad'].sum(),
+  'Nro. Ventas': len(filtro_adobo)
+})
+
+df_reporte = pd.DataFrame(reporte_resumen)
+
+pd.options.display.float_format = '{:,.2f}'.format
+print("\n REPORTE DEL MES: ")
+print(df_reporte)
 # ----------- Filtros-----------
 # filtro = df[df['Cantidad'] < 50]
 filtro_pasta_allegri = df[df['Descripcion'].str.contains("PASTA ALLEGRI", case=False, na=False )]
@@ -41,43 +76,18 @@ total = filtro_harina_dulce_mar.sum()
 filtro_devoluciones =df[df['Descripcion'].str.contains("ITEM SIN EXISTENCIA", case=False, na=False )]
 total = filtro_devoluciones.sum()
 
+console = Console()
 
-#--- PRODUCTOS MONACA ---
-filtro_avena = df[df['Descripcion'].str.contains("AVENA LASSIE", case=False, na=False )]
-filtro_harina_maiz = df[df['Descripcion'].str.contains("HARINA JUANA", case=False, na=False )]
-filtro_adobo = df[df['Codigo']=='010003']
-filtro_arroz_monica = df[df['Descripcion'].str.contains("ARROZ MONICA", case=False, na=False )]
-filtro_harina_robin_hood = df[df['Descripcion'].str.contains("ROBIN HOOD", case=False, na=False )]
-filtro_chococao = df[df['Descripcion'].str.contains("BEBIDA CHOCOCAO", case=False, na=False )]
+table = Table(title="📊Reporte De Ventas")
+table.add_column("Producto", style="cyan", no_wrap=True)
+table.add_column("Cant. Total", justify="right", style="magenta")
+table.add_column("Ventas",justify="right", style="yellow")
 
+for index, row in df_reporte.iterrows():
+  table.add_row(
+    str(row['Producto/Categoria']),
+    f"{row['Cantidad Total']:,.2f}",
+    str(row['Nro. Ventas'])
+  )
 
-
-
-
-
-
-
-
-
-
-
-
-# Total = filtro['Cantidad'].sum()
-
-# ----------- Salida de datos -----------
-print("----------------- Productos Allegri -----------------")
-print(filtro_pasta_allegri[['Codigo', 'Descripcion', 'Cantidad']])
-print(filtro_pasta_horizonte[['Codigo', 'Descripcion', 'Cantidad']])
-print(filtro_pasticho_allegri[['Codigo', 'Descripcion', 'Cantidad']])
-print(filtro_harina_dulce_mar[['Codigo', 'Descripcion', 'Cantidad']])
-print(filtro_pasticho_micasa[['Codigo', 'Descripcion', 'Cantidad']])
-print(filtro_devoluciones[['Codigo', 'Descripcion', 'Cantidad']])
-
-print("----------------- Productos Monaca -----------------")
-print(filtro_harina_maiz[['Codigo', 'Descripcion', 'Cantidad']])
-print(filtro_arroz_monica[['Codigo', 'Descripcion', 'Cantidad']])
-print(filtro_harina_robin_hood[['Codigo', 'Descripcion', 'Cantidad']])
-print(filtro_avena[['Codigo', 'Descripcion', 'Cantidad']])
-print(filtro_adobo[['Codigo', 'Descripcion', 'Cantidad']])
-print(filtro_chococao[['Codigo', 'Descripcion', 'Cantidad']])
-
+  console.print(table)
