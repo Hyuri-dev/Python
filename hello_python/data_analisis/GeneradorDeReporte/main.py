@@ -39,7 +39,7 @@ productos_por_codigo = ['001009', '001011' , '001012']
 
 #  Grupos de producto
 
-allegri = ["Pasta Allegri", "Pasta Horizonte", "Pasticho Allegri","Allegri Especialidades" ,"Pasticho Mi Casa", "Harina de Trigo Dulce Mar" , "Devoluciones"]
+allegri = ["Pasta Allegri", "Pasta Horizonte", "Pasticho Allegri","Allegri Especialidades" ,"Pasticho Mi Casa", "Harina de Trigo Dulce Mar" , ]
 monaca = ["Harina de Maiz Juana", "Harina de Trigo Robin Hood", "Arroz Monica", "Chococao", "Avena Lassie 400Gr", "Avena Lassie 800Gr", "Adobo La Comadre 200Gr"]
 
 reporte_resumen = []
@@ -167,9 +167,6 @@ def crea_reporte ():
       "-",
       style="bold yellow on green"
     )
-
     console.print(table)
-    
-    #------- Vista Montos Totales -------
 
 crea_reporte()
