@@ -35,12 +35,12 @@ productos = {
   "Chococao": "BEBIDA CHOCOCAO",
 }
 
-productos_novo = {
-  "Pasta Veneciana":"PASTA LA VENECIANA",
-  "":"",
-  "":"",
-  "":"",
-}
+# productos_novo = {
+#   "Pasta Veneciana":"PASTA LA VENECIANA",
+#   "":"",
+#   "":"",
+#   "":"",
+# }
 
 productos_por_codigo = ['001009', '001011' , '001012']
 
@@ -55,9 +55,6 @@ reporte_resumen = []
 # ----------- Filtros-----------
 
 # df[(df['Descripcion'].str.contains("ALLEGRI", case=False)) & (df['Cantidad'] > 0)]
-
-def crear_reporte_novo():
-   for nombre_producto , texto_buscar in productos_novo
 
 def crea_reporte ():
   
