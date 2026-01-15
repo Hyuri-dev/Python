@@ -11,9 +11,12 @@ except lite3.OperationalError as e:
   print(f"Error al conectarse: {e}")
 
 
-def create_driver (name: str , cedula: int, active: int):
+def create_driver (name: str , cedula: int, vehiculo: int ,active: int):
   cur = conexion.cursor()
-  cur.execute(f"INSERT INTO chofer (name , cedula, is_active) VALUES (?,?,?)", (name , cedula ,active))
+  cur.execute(f"INSERT INTO chofer (name , cedula, id_vehicle ,is_active) VALUES (?,?,?,?)", (name , cedula, vehiculo ,active))
   conexion.commit()
   messagebox.showinfo("Exito" , "Chofer creado exitosamente")
 
+
+
+create_driver(name="Dave Laya" ,cedula=7184360 ,vehiculo=1, active=1)
