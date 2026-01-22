@@ -11,7 +11,7 @@ except lite3.OperationalError as e:
   print(f"Error al conectarse: {e}")
 
 
-def create_type_vehicle (name):
+def create_type_vehicle (name: str):
   cur = conexion.cursor()
   cur.execute(f"INSERT INTO tipo_vehiculo (name) VALUES (?)", (name,))
   conexion.commit()

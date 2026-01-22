@@ -2,6 +2,8 @@ import sqlite3 as lite3
 import os
 import ttkbootstrap as ttk
 import tkinter as tk
+import components.control_panel as cp
+import components.treeview as tree
 
 
 
@@ -80,7 +82,7 @@ def data_window():
   
   btn_edit = ttk.Button(tab_general, text="Editar")
   
-  FRAME_TREEVIEW = ttk.Frame(tab_general, height= 200)
+  FRAME_TREEVIEW = tk.Frame(tab_general, height= 200)
   FRAME_TREEVIEW.pack()
   
   
@@ -113,28 +115,31 @@ def data_window():
   resultados = cur.fetchall()
   for fila in resultados : 
     treeview.insert("", tk.END, values=fila)
+    
+    controles_general = cp.ControlPanel(
+    FRAME_TREEVIEW, on_add=None,on_delete=None,on_edit=None)
+    controles_general.pack(side="bottom", fill="x", pady=10)
 
   #  Vista para choferes
   
   columnas = ("id" , "conductor" , "vehiculo")
   
-  tframe_choferes = ttk.Treeview(tab_choferes, height=200)
-  tframe_choferes.pack()
-  W_MIN = int(400/3)
+  FRAME_CHOFERES = ttk.Frame(tab_choferes, height=100)
+  FRAME_CHOFERES.pack()
+  W_MIN = int(400/len(columnas))
   
-  treeview_choferes = ttk.Treeview(tframe_choferes,columns=columnas, show='headings' , height=100)
-  treeview_choferes.pack(expand=True, fill='both')
+  treeview_choferes = ttk.Treeview(FRAME_CHOFERES,columns=columnas, show='headings' , height=10)
+  treeview_choferes.pack(expand=True, fill='both', padx=10, pady=10)
   
     
   treeview_choferes.heading('id', text="Id")
   treeview_choferes.heading('conductor',text="Conductor")
   treeview_choferes.heading('vehiculo',text="Camion Asignado")
-  # treeview_choferes.heading('placa', text="Placa")
+
   
   treeview_choferes.column('id',width= W_MIN, anchor="center")
   treeview_choferes.column('conductor',width=W_MIN, anchor="center")
   treeview_choferes.column('vehiculo',width=W_MIN, anchor="center")
-  # treeview_choferes.column('placa',width=100, anchor="center")
   
   for fila in treeview_choferes.get_children():
     treeview_choferes.delete(fila)
@@ -150,7 +155,35 @@ def data_window():
   resultados = cur.fetchall()
   for fila in resultados : 
     treeview_choferes.insert("", tk.END, values=fila)
+    
+  
+  controles_chofer = cp.ControlPanel(
+    FRAME_CHOFERES, on_add=None,on_delete=None,on_edit=None
+  )
+  controles_chofer.pack(side="bottom", fill="x", pady=10)
+  
+  # Sección de vehiculos
+  
+  FRAME_VEHICULOS = ttk.Frame(tab_vehiculos, height=100)
+  FRAME_VEHICULOS.pack()
+  
+  cols = ("id", "nombre","placa", "tipo")
+  headers = ("ID","Nombre","Placa","Tipo")
+  widths = (50,100,100,100)
+  
+  tabla_vehiculos = tree.VistaListado(FRAME_VEHICULOS, cols, headers,widths)
+  tabla_vehiculos.pack(side="top", fill="both", expand=True)
+  query = """
+    SELECT v.id, v.name, v.car_plate, tv.name 
+    FROM vehiculo v 
+    JOIN tipo_vehiculo tv ON v.id_type_vehicle = tv.id 
+"""
+  cur.execute(query)
+  tabla_vehiculos.cargar_datos(cur.fetchall())
+  
+  controles_vehiculo = cp.ControlPanel(FRAME_VEHICULOS)
   
   new_window.mainloop()
+
 
 

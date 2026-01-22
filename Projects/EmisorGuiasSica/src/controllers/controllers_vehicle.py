@@ -10,11 +10,11 @@ try:
 except lite3.OperationalError as e:
   print(f"Error al conectarse: {e}")
 
-def crear_vehiculo (nombre, placa ,tipo_vehiculo):
+def crear_vehiculo (nombre: str, placa: str ,tipo_vehiculo: int):
   cur = conexion.cursor()
   cur.execute("INSERT INTO vehiculo (name, car_plate, id_type_vehicle) VALUES (?,?,?)", (nombre, placa ,tipo_vehiculo,))
   conexion.commit()
   messagebox.showinfo("Solicitud",f"Se ha creado el vehiculo: {nombre} con placa: {placa} correctamente")
 
 
-crear_vehiculo(nombre="A15" , placa="A15BS9D", tipo_vehiculo="1")
+# crear_vehiculo(nombre="A15" , placa="A15BS9D", tipo_vehiculo=1)
