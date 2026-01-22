@@ -60,17 +60,34 @@ def  llenar_combobox_vehiculo (conexiones, widget):
 
 def data_window():
   #  configuracion del treeview
+  
   columnas = ("id", "conductor", "vehiculo", 'placa')
   
   new_window = ttk.Toplevel(title="Datos")
   new_window.geometry("400x500")
+  notebook = ttk.Notebook(new_window)
+  notebook.pack(pady=3 , expand=True)
   
-  treeview = ttk.Treeview(new_window,columns=columnas, show='headings' , height=100)
+  tab_general = ttk.Frame(notebook, width=400 , height=500)
+  tab_choferes = ttk.Frame(notebook, width= 400 , height=500)
+  tab_vehiculos = ttk.Frame(notebook, width=400, height= 500)
+  
+  notebook.add(tab_general, text="General")
+  notebook.add(tab_choferes, text="Choferes")
+  notebook.add(tab_vehiculos, text="Vehiculos")
+  
+  
+  
+  btn_edit = ttk.Button(tab_general, text="Editar")
+  
+  FRAME_TREEVIEW = ttk.Frame(tab_general, height= 200)
+  FRAME_TREEVIEW.pack()
+  
+  
+  
+  treeview = ttk.Treeview(tab_general,columns=columnas, show='headings' , height=100)
   treeview.pack(expand=True, fill='both')
   
-  # for col in columnas:
-    # treeview.heading(col, text=col)
-    # treeview.column(col, width=100)
     
   treeview.heading('id', text="Id")
   treeview.heading('conductor',text="Conductor")
@@ -85,6 +102,7 @@ def data_window():
   for fila in treeview.get_children():
     treeview.delete(fila)
   
+  
   cur = conexion.cursor()
   query = """
             SELECT c.id, c.name, v.name, v.car_plate
@@ -95,6 +113,43 @@ def data_window():
   resultados = cur.fetchall()
   for fila in resultados : 
     treeview.insert("", tk.END, values=fila)
+
+  #  Vista para choferes
+  
+  columnas = ("id" , "conductor" , "vehiculo")
+  
+  tframe_choferes = ttk.Treeview(tab_choferes, height=200)
+  tframe_choferes.pack()
+  W_MIN = int(400/3)
+  
+  treeview_choferes = ttk.Treeview(tframe_choferes,columns=columnas, show='headings' , height=100)
+  treeview_choferes.pack(expand=True, fill='both')
+  
+    
+  treeview_choferes.heading('id', text="Id")
+  treeview_choferes.heading('conductor',text="Conductor")
+  treeview_choferes.heading('vehiculo',text="Camion Asignado")
+  # treeview_choferes.heading('placa', text="Placa")
+  
+  treeview_choferes.column('id',width= W_MIN, anchor="center")
+  treeview_choferes.column('conductor',width=W_MIN, anchor="center")
+  treeview_choferes.column('vehiculo',width=W_MIN, anchor="center")
+  # treeview_choferes.column('placa',width=100, anchor="center")
+  
+  for fila in treeview_choferes.get_children():
+    treeview_choferes.delete(fila)
+  
+  
+  cur = conexion.cursor()
+  query = """
+            SELECT c.id, c.name, v.name
+            FROM chofer c
+            JOIN vehiculo v ON c.id_vehicle = v.id
+        """
+  cur.execute(query)
+  resultados = cur.fetchall()
+  for fila in resultados : 
+    treeview_choferes.insert("", tk.END, values=fila)
   
   new_window.mainloop()
 
