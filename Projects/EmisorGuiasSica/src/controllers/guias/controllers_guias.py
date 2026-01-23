@@ -4,7 +4,7 @@ import ttkbootstrap as ttk
 import tkinter as tk
 import components.control_panel as cp
 import components.treeview as tree
-
+import controllers.controllers_driver as cd
 
 
 map_choferes = {}
@@ -67,8 +67,8 @@ def data_window():
   
   new_window = ttk.Toplevel(title="Datos")
   new_window.geometry("400x500")
-  notebook = ttk.Notebook(new_window)
-  notebook.pack(pady=3 , expand=True)
+  notebook = ttk.Notebook(new_window, height=500)
+  notebook.pack(side="top",pady=3 , expand=True)
   
   tab_general = ttk.Frame(notebook, width=400 , height=500)
   tab_choferes = ttk.Frame(notebook, width= 400 , height=500)
@@ -79,31 +79,15 @@ def data_window():
   notebook.add(tab_vehiculos, text="Vehiculos")
   
   
+  FRAME_GENERAL = tk.Frame(tab_general, height= 200)
+  FRAME_GENERAL.pack()
   
-  btn_edit = ttk.Button(tab_general, text="Editar")
+  cols = ("id" , "conductor" , "vehiculo", "placa")
+  headers = ("ID" , "Nombre", "Camión Asignado", "Placa")
+  widths = (50, 100 ,100, 100)
   
-  FRAME_TREEVIEW = tk.Frame(tab_general, height= 200)
-  FRAME_TREEVIEW.pack()
-  
-  
-  
-  treeview = ttk.Treeview(tab_general,columns=columnas, show='headings' , height=100)
-  treeview.pack(expand=True, fill='both')
-  
-    
-  treeview.heading('id', text="Id")
-  treeview.heading('conductor',text="Conductor")
-  treeview.heading('vehiculo',text="Camion Asignado")
-  treeview.heading('placa', text="Placa")
-  
-  treeview.column('id',width=5, anchor="center")
-  treeview.column('conductor',width=100, anchor="center")
-  treeview.column('vehiculo',width=100, anchor="center")
-  treeview.column('placa',width=100, anchor="center")
-  
-  for fila in treeview.get_children():
-    treeview.delete(fila)
-  
+  tabla_general = tree.VistaListado(FRAME_GENERAL,cols, headers, widths)
+  tabla_general.pack(side="top", fill="both", expand=True)
   
   cur = conexion.cursor()
   query = """
@@ -112,56 +96,40 @@ def data_window():
             JOIN vehiculo v ON c.id_vehicle = v.id
         """
   cur.execute(query)
-  resultados = cur.fetchall()
-  for fila in resultados : 
-    treeview.insert("", tk.END, values=fila)
+  tabla_general.cargar_datos(cur.fetchall())
     
-    controles_general = cp.ControlPanel(
-    FRAME_TREEVIEW, on_add=None,on_delete=None,on_edit=None)
-    controles_general.pack(side="bottom", fill="x", pady=10)
-
-  #  Vista para choferes
+  controles_general = cp.ControlPanel(
+    FRAME_GENERAL, on_add=None,on_delete=None,on_edit=None)
   
-  columnas = ("id" , "conductor" , "vehiculo")
+  controles_general.pack()
+  
+  #  Vista para choferes
   
   FRAME_CHOFERES = ttk.Frame(tab_choferes, height=100)
   FRAME_CHOFERES.pack()
-  W_MIN = int(400/len(columnas))
   
-  treeview_choferes = ttk.Treeview(FRAME_CHOFERES,columns=columnas, show='headings' , height=10)
-  treeview_choferes.pack(expand=True, fill='both', padx=10, pady=10)
+  cols = ("id" , "conductor" , "vehiculo")
+  headers = ("ID" , "Nombre", "Camión Asignado")
+  widths = (116 , 116 ,116)
   
-    
-  treeview_choferes.heading('id', text="Id")
-  treeview_choferes.heading('conductor',text="Conductor")
-  treeview_choferes.heading('vehiculo',text="Camion Asignado")
+  tabla_choferes = tree.VistaListado(FRAME_CHOFERES,columnas=cols, encabezados=headers, anchos=widths)
+  tabla_choferes.pack(side="top", fill="both", expand=True)
 
-  
-  treeview_choferes.column('id',width= W_MIN, anchor="center")
-  treeview_choferes.column('conductor',width=W_MIN, anchor="center")
-  treeview_choferes.column('vehiculo',width=W_MIN, anchor="center")
-  
-  for fila in treeview_choferes.get_children():
-    treeview_choferes.delete(fila)
-  
-  
-  cur = conexion.cursor()
+
   query = """
             SELECT c.id, c.name, v.name
             FROM chofer c
             JOIN vehiculo v ON c.id_vehicle = v.id
         """
   cur.execute(query)
-  resultados = cur.fetchall()
-  for fila in resultados : 
-    treeview_choferes.insert("", tk.END, values=fila)
-    
+  tabla_choferes.cargar_datos(cur.fetchall())
+  
   
   controles_chofer = cp.ControlPanel(
-    FRAME_CHOFERES, on_add=None,on_delete=None,on_edit=None
+    FRAME_CHOFERES, on_add=cd.create_driver,on_delete=None,on_edit=None
   )
-  controles_chofer.pack(side="bottom", fill="x", pady=10)
-  
+  controles_chofer.pack()
+
   # Sección de vehiculos
   
   FRAME_VEHICULOS = ttk.Frame(tab_vehiculos, height=100)
@@ -182,6 +150,7 @@ def data_window():
   tabla_vehiculos.cargar_datos(cur.fetchall())
   
   controles_vehiculo = cp.ControlPanel(FRAME_VEHICULOS)
+  controles_vehiculo.pack()
   
   new_window.mainloop()
 

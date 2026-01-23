@@ -19,3 +19,18 @@ class ControlPanel(ttk.Frame):
 
         self.btn_delete = ttk.Button(self, text="Eliminar", bootstyle="danger", command=self.on_delete)
         self.btn_delete.pack(side='left', padx=5)
+
+class ButtonsBasic(ttk.Frame):
+    def __init__(self, master, on_add=None, cancel=None, **kwargs):
+        super().__init__(master, **kwargs)
+        
+        # Guardamos las funciones que se ejecutarán al presionar los botones
+        self.on_add = on_add
+        self.cancel = cancel
+
+        # Configuración de estilo y botones
+        self.btn_add = ttk.Button(self, text="Agregar", bootstyle="success", command=self.on_add)
+        self.btn_add.pack(side='left', padx=5)
+
+        self.btn_cancel = ttk.Button(self, text="Cancelar", bootstyle="danger", command=self.cancel)
+        self.btn_cancel.pack(side='left', padx=5)
