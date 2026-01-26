@@ -56,7 +56,7 @@ def  llenar_combobox_vehiculo (conexiones, widget):
     nombres.append(nombre_db)
     
     widget['values'] = nombres
-    return map_choferes
+  return map_vehicles
 
 
 
