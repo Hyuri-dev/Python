@@ -1,5 +1,6 @@
 import pandas as pd
-import openpyxl
+import openpyxl as opyxl
+from openpyxl import load_workbook
 from rich.console import Console
 from rich.table import Table
 
@@ -9,10 +10,12 @@ nombres_limpios = [
     "Descuentos", "IVA", "Costo", "Utilidad", "PorcUtilidad", "Existencia"
 ]
 
+
+
 #  Data frame 
 df = pd.read_csv(
-    r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\Productosvendidos.TXT",
-    sep='\t', 
+    r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosJULIO.TXT",
+    sep='\t',   
     encoding='latin-1', 
     names=nombres_limpios, #Nombres nuevos para el header
     header=0,
@@ -33,6 +36,8 @@ productos = {
   "Harina de Trigo Robin Hood":"ROBIN HOOD",
   "Arroz Monica": "ARROZ MONICA",
   "Chococao": "BEBIDA CHOCOCAO",
+  "Margarina Juana":"MARGARINA JUANA",
+  "Aceite Vegetal": "ACEITE VEGETAL LA COMADRE",
 }
 
 # productos_novo = {
@@ -63,6 +68,7 @@ def crea_reporte ():
       total_cantidad = filtro['Cantidad'].sum()
       total_bruto = filtro['MontoBruto'].sum()
       IVA = filtro['IVA'].sum()
+      
 
       reporte_resumen.append({
         "Producto/Categoria": nombre_producto,
@@ -70,6 +76,8 @@ def crea_reporte ():
         "MontoBruto": total_bruto,
         "IVA": IVA
       })
+      return total_cantidad
+      
       
     #  ---------- Filtros por codigo ----------
     
@@ -176,5 +184,15 @@ def crea_reporte ():
       style="bold yellow on green"
     )
     console.print(table)
+    
+    libro = opyxl.load_workbook(r'C:\Users\Personal\Documents\JEFF\NOVIEMBRE 2025\DIACENCA_VENTAS.xlsm')
+    
+    ws = libro["Hoja1"]
+    
+    print(libro.sheetnames)
+    
+    valor = ws['G6'].value
+    # ws["G6"] = f"{total_cantidad}"
+    
 
 crea_reporte()
