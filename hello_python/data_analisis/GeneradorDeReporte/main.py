@@ -14,7 +14,7 @@ nombres_limpios = [
 
 #  Data frame 
 df = pd.read_csv(
-    r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosJULIO.TXT",
+    r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosVICTOR.TXT",
     sep='\t',   
     encoding='latin-1', 
     names=nombres_limpios, #Nombres nuevos para el header
@@ -52,7 +52,7 @@ productos_por_codigo = ['001009', '001011' , '001012']
 #  Grupos de producto
 
 allegri = ["Pasta Allegri", "Pasta Horizonte", "Pasticho Allegri","Allegri Especialidades" ,"Pasticho Mi Casa", "Harina de Trigo Dulce Mar" , ]
-monaca = ["Harina de Maiz Juana", "Harina de Trigo Robin Hood", "Arroz Monica", "Chococao", "Avena Lassie 400Gr", "Avena Lassie 800Gr", "Adobo La Comadre 200Gr"]
+monaca = ["Harina de Maiz Juana", "Harina de Trigo Robin Hood", "Arroz Monica", "Chococao", "Avena Lassie 400Gr", "Avena Lassie 800Gr", "Adobo La Comadre 200Gr", "Margarina Juana", "Aceite Vegetal"]
 
 reporte_resumen = []
 
@@ -71,12 +71,11 @@ def crea_reporte ():
       
 
       reporte_resumen.append({
-        "Producto/Categoria": nombre_producto,
+        "Producto/Categoria": nombre_producto,    
         "Cantidad Total": total_cantidad,
         "MontoBruto": total_bruto,
         "IVA": IVA
       })
-      return total_cantidad
       
       
     #  ---------- Filtros por codigo ----------
@@ -130,9 +129,20 @@ def crea_reporte ():
     
     df_reporte = pd.DataFrame(reporte_resumen)
     
-    # total_monto_grupo_1 = df_reporte[df_reporte['Producto/Categoria'].isin(lista_grupo_1)]['MontoBruto'].sum()
     filtro_monto_allegri = df_reporte[df_reporte['Producto/Categoria'].isin(allegri)]['MontoBruto'].sum()
     filtro_monto_monaca = df_reporte[df_reporte['Producto/Categoria'].isin(monaca)]['MontoBruto'].sum()
+    
+    
+    try: 
+      ruta_excel= r"C:\Users\Personal\Documents\JEFF\NOVIEMBRE 2025\DIACENCA_VENTAS.xlsm"
+      libro = opyxl.load_workbook(ruta_excel, keep_vba=True)
+      ws = libro["Hoja1"]
+      
+      ws["G20"] = filtro_monto_allegri
+      libro.save(ruta_excel)
+      print(" ✅ Excel Guardado exitosamente")
+    except Exception as e:
+      print(f" ❌ Error al guardar el excel: {e}")
     
     
     
@@ -185,14 +195,8 @@ def crea_reporte ():
     )
     console.print(table)
     
-    libro = opyxl.load_workbook(r'C:\Users\Personal\Documents\JEFF\NOVIEMBRE 2025\DIACENCA_VENTAS.xlsm')
     
-    ws = libro["Hoja1"]
-    
-    print(libro.sheetnames)
-    
-    valor = ws['G6'].value
-    # ws["G6"] = f"{total_cantidad}"
+
     
 
 crea_reporte()
