@@ -1,0 +1,5 @@
+1. Implementar un menu con acciones
+
+2. Implementar la opcion de abrir reporte en el menu y que se abra con el explorador de archivos
+
+3. refactorizar el codigo
