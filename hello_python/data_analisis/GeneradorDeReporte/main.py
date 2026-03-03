@@ -14,7 +14,7 @@ nombres_limpios = [
 
 #  Data frame 
 df = pd.read_csv(
-    r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosVICTOR.TXT",
+    r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosVG.TXT",
     sep='\t',   
     encoding='latin-1', 
     names=nombres_limpios, #Nombres nuevos para el header
@@ -34,6 +34,7 @@ productos = {
   "Harina de Trigo Dulce Mar":  "HARINA DE TRIGO DULCE MAR",
   "Harina de Maiz Juana": "HARINA JUANA",
   "Harina de Trigo Robin Hood":"ROBIN HOOD",
+  "Harina de Cachapa Juana": "MEZCLA CACHAPA JUANA",
   "Arroz Monica": "ARROZ MONICA",
   "Chococao": "BEBIDA CHOCOCAO",
   "Margarina Juana":"MARGARINA JUANA",
@@ -52,7 +53,7 @@ productos_por_codigo = ['001009', '001011' , '001012']
 #  Grupos de producto
 
 allegri = ["Pasta Allegri", "Pasta Horizonte", "Pasticho Allegri","Allegri Especialidades" ,"Pasticho Mi Casa", "Harina de Trigo Dulce Mar" , ]
-monaca = ["Harina de Maiz Juana", "Harina de Trigo Robin Hood", "Arroz Monica", "Chococao", "Avena Lassie 400Gr", "Avena Lassie 800Gr", "Adobo La Comadre 200Gr", "Margarina Juana", "Aceite Vegetal"]
+monaca = ["Harina de Maiz Juana","Harina de Cachapa Juana" ,"Harina de Trigo Robin Hood", "Arroz Monica", "Chococao", "Avena Lassie 400Gr", "Avena Lassie 800Gr", "Adobo La Comadre 200Gr", "Margarina Juana", "Aceite Vegetal"]
 
 reporte_resumen = []
 
