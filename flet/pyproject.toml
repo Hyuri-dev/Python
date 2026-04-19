@@ -34,6 +34,11 @@ dev-dependencies = [
     "flet[all]==0.28.3",
 ]
 
+[tool.uv.workspace]
+members = [
+    "fior-app/fior-app",
+]
+
 [tool.poetry]
 package-mode = false
 
