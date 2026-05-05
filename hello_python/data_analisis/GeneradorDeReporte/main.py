@@ -125,8 +125,6 @@ def crea_reporte ():
       'Cantidad Total': filtro_avena_400['Cantidad'].sum(),
       'MontoBruto': filtro_avena_400['MontoBruto'].sum(),
         "IVA": filtro_avena_400['IVA'].sum(),
-
-
       })
     
     filtro_avena_800 =df[df['Codigo']== '010008']
