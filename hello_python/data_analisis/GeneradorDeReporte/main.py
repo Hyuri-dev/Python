@@ -13,18 +13,19 @@ nombres_limpios = [
 
 
 #  Data frame 
-df = pd.read_csv(
-    r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosVG.TXT",
-    sep='\t',   
-    encoding='latin-1', 
-    names=nombres_limpios, #Nombres nuevos para el header
-    header=0,
-    thousands='.', 
-    decimal=',',
-    index_col=False,         
-    dtype={'Codigo': str}    #Codigo tiene que ser leido como str y no como objeto
-)
 
+
+
+ubicacion_reporte = {
+        "Julio Medina": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosJULIO.TXT",
+        "Victor Ferreira": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\Productosvendidosvictorf.TXT",
+        "Luis Duran": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosLUIS.TXT",
+        "Robert Rodrigues": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosRobert.TXT",
+        "Distribuidora": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosDist.TXT" ,
+        "Yosemith Ponce": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosYos.TXT",
+        "Jesus Hernandez": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosJesus.TXT",
+        "Victor Gonzales": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosvictorG.TXT"
+      }
 
 productos = {
   "Pasta Allegri": "PASTA ALLEGRI",
@@ -39,7 +40,9 @@ productos = {
   "Chococao": "BEBIDA CHOCOCAO",
   "Margarina Juana":"MARGARINA JUANA",
   "Aceite Vegetal": "ACEITE VEGETAL LA COMADRE",
+  "Avena Robin Hood":"AVENA ROBIN HOOD HOJ BOLSA"
 }
+
 
 # productos_novo = {
 #   "Pasta Veneciana":"PASTA LA VENECIANA",
@@ -58,12 +61,26 @@ monaca = ["Harina de Maiz Juana","Harina de Cachapa Juana" ,"Harina de Trigo Rob
 reporte_resumen = []
 
 
+
 # ----------- Filtros-----------
 
 # df[(df['Descripcion'].str.contains("ALLEGRI", case=False)) & (df['Cantidad'] > 0)]
 
 def crea_reporte ():
   
+  for vendedor , ruta in  ubicacion_reporte.items():
+    print(f"procesando a: {vendedor}")
+    df = pd.read_csv(
+        ruta,
+        sep='\t',   
+        encoding='latin-1', 
+        names=nombres_limpios, #Nombres nuevos para el header
+        header=0,
+        thousands='.', 
+        decimal=',',
+        index_col=False,         
+        dtype={'Codigo': str}    #Codigo tiene que ser leido como str y no como objeto
+    )
     for nombre_producto , texto_buscar in productos.items():
       filtro = df[(df['Descripcion'].str.contains(texto_buscar, case=False, na=False)) & (df['Cantidad'] > 0) & (df["Cantidad"])]
       total_cantidad = filtro['Cantidad'].sum()
@@ -72,11 +89,16 @@ def crea_reporte ():
       
 
       reporte_resumen.append({
+        "Vendedor": vendedor,
         "Producto/Categoria": nombre_producto,    
         "Cantidad Total": total_cantidad,
         "MontoBruto": total_bruto,
         "IVA": IVA
       })
+      
+      
+      # print(reporte_resumen[0]["Cantidad Total"])
+      
       
       
     #  ---------- Filtros por codigo ----------
@@ -134,19 +156,7 @@ def crea_reporte ():
     filtro_monto_monaca = df_reporte[df_reporte['Producto/Categoria'].isin(monaca)]['MontoBruto'].sum()
     
     
-    try: 
-      ruta_excel= r"C:\Users\Personal\Documents\JEFF\NOVIEMBRE 2025\DIACENCA_VENTAS.xlsm"
-      libro = opyxl.load_workbook(ruta_excel, keep_vba=True)
-      ws = libro["Hoja1"]
-      
-      ws["G20"] = filtro_monto_allegri
-      libro.save(ruta_excel)
-      print(" ✅ Excel Guardado exitosamente")
-    except Exception as e:
-      print(f" ❌ Error al guardar el excel: {e}")
-    
-    
-    
+
     
     
     # -------- Vista de la consola --------
@@ -195,9 +205,5 @@ def crea_reporte ():
       style="bold yellow on green"
     )
     console.print(table)
-    
-    
-
-    
 
 crea_reporte()

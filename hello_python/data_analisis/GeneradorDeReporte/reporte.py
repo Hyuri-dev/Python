@@ -9,7 +9,7 @@ headers_novo = [
 ]
 
 df = pd.read_csv(
-    r"\\SERVIDOR\a2Apps\a2NovoEuropa\a2Admin\Empre001\REPORTS\Productosvendidos.TXT",
+    r"\\SERVIDOR\a2Apps\a2NovoEuropa\a2Admin\Empre001\REPORTS\ProductosvendidosJH.TXT",
     sep='\t', 
     encoding='latin-1', #formato del texto, como hay letras con tildes, usamos el formato latin-1 para que estas sean reconocidas 
     names=headers_novo, #Nombres nuevos para el header
@@ -26,6 +26,7 @@ productos_novo = {
   "Pasticho Sirena":"PASTICHO LA SIRENA DIRECTO AL HORNO",
   "Aceite de Soya Portumesa Grande":"ACEITE SOYA PORTUMESA 12 X 850 ML",
   "Aceite de Soya Portumesa Pequeño":"ACEITE SOYA PORTUMESA 12 X 485ML",
+  "Aceite de Soya Portumesa Galon" : "ACEITE SOYA PORTUMESA 1 X 18 L "
 }
 
 especialidades_novo = {"Pasta Linguini":'0050011',
