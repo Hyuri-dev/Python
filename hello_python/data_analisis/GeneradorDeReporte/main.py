@@ -68,7 +68,9 @@ reporte_resumen = []
 
 def crea_reporte ():
   
+  
   for vendedor , ruta in  ubicacion_reporte.items():
+    report_vendedor = []
     print(f"procesando a: {vendedor}")
     df = pd.read_csv(
         ruta,
@@ -78,7 +80,7 @@ def crea_reporte ():
         header=0,
         thousands='.', 
         decimal=',',
-        index_col=False,         
+        index_col=False,          
         dtype={'Codigo': str}    #Codigo tiene que ser leido como str y no como objeto
     )
     for nombre_producto , texto_buscar in productos.items():
@@ -88,7 +90,7 @@ def crea_reporte ():
       IVA = filtro['IVA'].sum()
       
 
-      reporte_resumen.append({
+      report_vendedor.append({
         "Vendedor": vendedor,
         "Producto/Categoria": nombre_producto,    
         "Cantidad Total": total_cantidad,
@@ -104,7 +106,7 @@ def crea_reporte ():
     #  ---------- Filtros por codigo ----------
     
     filtro_allegri_especialidades = df[df["Codigo"].isin(productos_por_codigo)]
-    reporte_resumen.append({
+    report_vendedor.append({
     'Producto/Categoria': 'Allegri Especialidades',
       'Cantidad Total': filtro_allegri_especialidades['Cantidad'].sum(),
       'MontoBruto': filtro_allegri_especialidades['MontoBruto'].sum(),
@@ -112,7 +114,7 @@ def crea_reporte ():
     })
     
     filtro_devoluciones = df[df['Codigo']== '009001']
-    reporte_resumen.append({
+    report_vendedor.append({
     'Producto/Categoria': 'Devoluciones',
       'Cantidad Total': filtro_devoluciones['Cantidad'].sum(),
       'MontoBruto': filtro_devoluciones['MontoBruto'].sum(),
@@ -120,7 +122,7 @@ def crea_reporte ():
     })
       
     filtro_avena_400 =df[df['Codigo']== '010002']
-    reporte_resumen.append({
+    report_vendedor.append({
     'Producto/Categoria': 'Avena Lassie 400Gr',
       'Cantidad Total': filtro_avena_400['Cantidad'].sum(),
       'MontoBruto': filtro_avena_400['MontoBruto'].sum(),
@@ -128,7 +130,7 @@ def crea_reporte ():
       })
     
     filtro_avena_800 =df[df['Codigo']== '010008']
-    reporte_resumen.append({
+    report_vendedor.append({
     'Producto/Categoria': 'Avena Lassie 800Gr',
       'Cantidad Total': filtro_avena_800['Cantidad'].sum(),
       'MontoBruto': filtro_avena_800['MontoBruto'].sum(),
@@ -136,7 +138,7 @@ def crea_reporte ():
       })
 
     filtro_adobo = df[df['Codigo']== '010003']
-    reporte_resumen.append({
+    report_vendedor.append({
       'Producto/Categoria': 'Adobo La Comadre 200Gr',
       'Cantidad Total': filtro_adobo['Cantidad'].sum(),
       'MontoBruto': filtro_adobo['MontoBruto'].sum(),
@@ -148,10 +150,11 @@ def crea_reporte ():
     filtro_total = df['Cantidad'].sum()
     filtro_monto_global = df['MontoBruto'].sum()
     
-    df_reporte = pd.DataFrame(reporte_resumen)
+    df_reporte = pd.DataFrame(report_vendedor)
+    df_reporte_individual = pd.DataFrame(report_vendedor)
     
-    filtro_monto_allegri = df_reporte[df_reporte['Producto/Categoria'].isin(allegri)]['MontoBruto'].sum()
-    filtro_monto_monaca = df_reporte[df_reporte['Producto/Categoria'].isin(monaca)]['MontoBruto'].sum()
+    filtro_monto_allegri = df_reporte_individual[df_reporte_individual['Producto/Categoria'].isin(allegri)]['MontoBruto'].sum()
+    filtro_monto_monaca = df_reporte_individual[df_reporte_individual['Producto/Categoria'].isin(monaca)]['MontoBruto'].sum()
     
     
 
@@ -167,7 +170,7 @@ def crea_reporte ():
     table.add_column("IVA",justify="right", style="red")
     
 
-    for index, row in df_reporte.iterrows():
+    for index, row in df_reporte_individual.iterrows():
       table.add_row(
         str(row['Producto/Categoria']),
         f"{row['Cantidad Total']:,.2f}",
