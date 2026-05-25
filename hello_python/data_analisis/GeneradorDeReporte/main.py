@@ -3,6 +3,16 @@ import openpyxl as opyxl
 from openpyxl import load_workbook
 from rich.console import Console
 from rich.table import Table
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+
+filas = {
+  "PASTA HORIZONTE": "A1",
+  "PASTA ALLEGRI": "A22"
+}
 
 # ----------- Headers del dataframe nuevo -----------
 nombres_limpios = [
@@ -17,14 +27,13 @@ nombres_limpios = [
 
 
 ubicacion_reporte = {
-        "Julio Medina": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosJULIO.TXT",
-        "Victor Ferreira": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\Productosvendidosvictorf.TXT",
-        "Luis Duran": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosLUIS.TXT",
-        "Robert Rodrigues": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosRobert.TXT",
-        "Distribuidora": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosDist.TXT" ,
-        "Yosemith Ponce": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosYos.TXT",
-        "Jesus Hernandez": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosJesus.TXT",
-        "Victor Gonzales": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosvictorG.TXT"
+        "JULIO MEDINA": os.getenv("JULIO"),
+        "VICTOR FERREIRA": os.getenv("VICTOR_FERREIRA"),
+        "LUIS DURAN": os.getenv("LUIS"),
+        "ROBERT RODRIGUEZ": os.getenv("ROBERT"),
+        "YOSEMITH PONCE": os.getenv("YOSEMITH"),
+        "JESUS HERNANDEZ": os.getenv("JESUS"),
+        "VICTOR GONZALES": os.getenv("VICTOR_GONZALES")
       }
 
 productos = {
@@ -44,12 +53,7 @@ productos = {
 }
 
 
-# productos_novo = {
-#   "Pasta Veneciana":"PASTA LA VENECIANA",
-#   "":"",
-#   "":"",
-#   "":"",
-# }
+
 
 productos_por_codigo = ['001009', '001011' , '001012']
 
@@ -150,12 +154,23 @@ def crea_reporte ():
     filtro_total = df['Cantidad'].sum()
     filtro_monto_global = df['MontoBruto'].sum()
     
-    df_reporte = pd.DataFrame(report_vendedor)
+    # df_reporte = pd.DataFrame(report_vendedor)
     df_reporte_individual = pd.DataFrame(report_vendedor)
     
     filtro_monto_allegri = df_reporte_individual[df_reporte_individual['Producto/Categoria'].isin(allegri)]['MontoBruto'].sum()
     filtro_monto_monaca = df_reporte_individual[df_reporte_individual['Producto/Categoria'].isin(monaca)]['MontoBruto'].sum()
-    
+
+    try:
+      wb = load_workbook(filename=os.getenv("REPORTE"))
+      ws = wb.active
+
+      value = ws['A5'].value
+      # sheet_ranges = wb['A5']
+      print(f"Valor: {value}")
+    except ValueError,NameError,RuntimeError:
+      print("Error al abrir el archivo de excel")
+
+
     
 
     
