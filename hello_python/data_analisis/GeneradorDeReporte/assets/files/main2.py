@@ -16,7 +16,7 @@ ubicacion_reporte = {
     "Luis Duran": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosLUIS.TXT",
     "Robert Rodrigues": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosRobert.TXT",
     "Distribuidora": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosDist.TXT" ,
-    "Yosemith Ponce": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosYos.TXT",
+    "Yosemith Ponce": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosYOSE.TXT",
     "Jesus Hernandez": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosJesus.TXT",
     "Victor Gonzales": r"\\SERVIDOR\a2Apps\a2Admin\Empre001\REPORTS\ProductosvendidosvictorG.TXT"
 }

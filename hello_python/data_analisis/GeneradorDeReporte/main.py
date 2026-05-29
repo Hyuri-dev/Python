@@ -76,6 +76,8 @@ def crea_reporte ():
   for vendedor , ruta in  ubicacion_reporte.items():
     report_vendedor = []
     print(f"procesando a: {vendedor}")
+    if ruta is None:
+        raise ValueError(f"La ruta para el vendedor '{vendedor}' no está definida. Verifica las variables de entorno.")
     df = pd.read_csv(
         ruta,
         sep='\t',   
@@ -160,15 +162,15 @@ def crea_reporte ():
     filtro_monto_allegri = df_reporte_individual[df_reporte_individual['Producto/Categoria'].isin(allegri)]['MontoBruto'].sum()
     filtro_monto_monaca = df_reporte_individual[df_reporte_individual['Producto/Categoria'].isin(monaca)]['MontoBruto'].sum()
 
-    try:
-      wb = load_workbook(filename=os.getenv("REPORTE"))
-      ws = wb.active
+    # try:
+    #   wb = load_workbook(filename=os.getenv("REPORTE"))
+    #   ws = wb.active
 
-      value = ws['A5'].value
-      # sheet_ranges = wb['A5']
-      print(f"Valor: {value}")
-    except ValueError,NameError,RuntimeError:
-      print("Error al abrir el archivo de excel")
+    #   value = ws['A5'].value
+    #   # sheet_ranges = wb['A5']
+    #   print(f"Valor: {value}")
+    # except ValueError,NameError,RuntimeError:
+    #   print("Error al abrir el archivo de excel")
 
 
     
