@@ -33,7 +33,8 @@ ubicacion_reporte = {
         "ROBERT RODRIGUEZ": os.getenv("ROBERT"),
         "YOSEMITH PONCE": os.getenv("YOSEMITH"),
         "JESUS HERNANDEZ": os.getenv("JESUS"),
-        "VICTOR GONZALES": os.getenv("VICTOR_GONZALES")
+        "VICTOR GONZALES": os.getenv("VICTOR_GONZALES"),
+        "DISTRIBUIDORA": os.getenv("DISTRIBUIDORA")
       }
 
 productos = {
@@ -43,7 +44,8 @@ productos = {
   "Pasticho Mi Casa": "PASTICHO MI CASA",
   "Harina de Trigo Dulce Mar":  "HARINA DE TRIGO DULCE MAR",
   "Harina de Maiz Juana": "HARINA JUANA",
-  "Harina de Trigo Robin Hood":"ROBIN HOOD",
+  "Harina de Trigo Robin Hood Leudante":"HARI TRG. LEUDANTE ROBIN HOOD 20X900GR (E)",
+  "Harina de trigo Robin Hood T/uso":"HARINA TR TODO USO ROBIN HOOD 20X900GR. (E)",
   "Harina de Cachapa Juana": "MEZCLA CACHAPA JUANA",
   "Arroz Monica": "ARROZ MONICA",
   "Chococao": "BEBIDA CHOCOCAO",
@@ -88,7 +90,7 @@ def crea_reporte ():
         dtype={'Codigo': str}    #Codigo tiene que ser leido como str y no como objeto
     )
     for nombre_producto , texto_buscar in productos.items():
-      filtro = df[(df['Descripcion'].str.contains(texto_buscar, case=False, na=False)) & (df['Cantidad'] > 0) & (df["Cantidad"])]
+      filtro = df[(df['Descripcion'].str.contains(texto_buscar, case=False, na=False, regex=False)) & (df['Cantidad'] > 0)]
       total_cantidad = filtro['Cantidad'].sum()
       total_bruto = filtro['MontoBruto'].sum()
       IVA = filtro['IVA'].sum()
@@ -160,15 +162,15 @@ def crea_reporte ():
     filtro_monto_allegri = df_reporte_individual[df_reporte_individual['Producto/Categoria'].isin(allegri)]['MontoBruto'].sum()
     filtro_monto_monaca = df_reporte_individual[df_reporte_individual['Producto/Categoria'].isin(monaca)]['MontoBruto'].sum()
 
-    try:
-      wb = load_workbook(filename=os.getenv("REPORTE"))
-      ws = wb.active
+    # try:
+    #   wb = load_workbook(filename=os.getenv("REPORTE"))
+    #   ws = wb.active
 
-      value = ws['A5'].value
-      # sheet_ranges = wb['A5']
-      print(f"Valor: {value}")
-    except ValueError,NameError,RuntimeError:
-      print("Error al abrir el archivo de excel")
+    #   value = ws['A5'].value
+    #   # sheet_ranges = wb['A5']
+    #   print(f"Valor: {value}")
+    # except ValueError,NameError,RuntimeError:
+    #   print("Error al abrir el archivo de excel")
 
 
     

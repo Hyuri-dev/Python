@@ -3,3 +3,5 @@
 2. Implementar la opcion de abrir reporte en el menu y que se abra con el explorador de archivos
 
 3. refactorizar el codigo
+
+4. Chequear la suma de los productos monaca (harinas rh)
