@@ -1,39 +1,40 @@
-from playwright.sync_api import sync_playwright, expect
+from playwright.async_api import async_playwright, expect
 # import pywhatkit as ws
 from datetime import date
 import sys 
 import os
+from pathlib import Path
+import asyncio
 
 
 
+async def obtener_bcv():
+    """Obtiene la tasa del BCV y guarda una captura."""
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    OUTPUT_DIR = BASE_DIR / "assets"
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    ruta_screenshot = OUTPUT_DIR / "TASA.png"
 
-def obtener_bcv():
-  
-  def resource_path (relative_path):
-    """Obtener rula absoluta al recurso"""
-    try:
-      base_path = sys._MEIPASS
-    except Exception:
-      base_path = os.path.abspath(".")
-    return os.path.join(base_path, relative_path)
-  
-  with sync_playwright() as p:
-    #Creamos un navegador, headless nos permite visualizar o no el navegador cuando arrancamos el script
-    browser = p.chromium.launch(headless=True)
-    #Creamos un contexto para el modo headless para asi simule la interaccion como un usuario
-    context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36")
-    page = context.new_page()
-    
-    page.goto("https://www.bcv.org.ve/")
-    
-    localizador = page.locator(".views-row.views-row-1.views-row-odd.views-row-first.views-row-last.row")
-    resultado = localizador.screenshot(path=r"C:\Users\Personal\python\Python\Projects\scriptTasaBcv\assets\tasas.png")
-    localizador_tasa = page.locator(".col-sm-6.col-xs-6.centrado strong")
-    tasa_usd = localizador_tasa.last.inner_text()
-    tasa_formateada = tasa_usd.replace(',', ".")
-    tasa_convertida = float(tasa_formateada)
-    print(f'La tasa es: {round(tasa_convertida, 4)} y se ha guardado una captura.')
-    return tasa_convertida
+    async with async_playwright() as p:
+        # Creamos un navegador headless y un contexto para simular un usuario.
+        browser = await p.chromium.launch(headless=True)
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
+        )
+        page = await context.new_page()
+        await page.goto("https://www.bcv.org.ve/")
+
+        localizador = page.locator(
+            ".views-row.views-row-1.views-row-odd.views-row-first.views-row-last.row"
+        )
+        await localizador.screenshot(path=str(ruta_screenshot))
+        localizador_tasa = page.locator("#dolar .col-sm-6.col-xs-6.centrado strong")
+        tasa_usd = await localizador_tasa.last.inner_text()
+        tasa_formateada  = tasa_usd.replace(",", ".")
+        tasa_convertida = float(tasa_formateada)
+        print(f"La tasa es: {round(tasa_convertida, 4)} y se ha guardado una captura.")
+        await browser.close()
+        return tasa_convertida
     
     
     
