@@ -4,7 +4,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 # 1. LEER EL ARCHIVO DE PEDIDOS
 # Saltamos las primeras 9 filas donde están los parámetros de búsqueda
-df = pd.read_excel('pedidos.xlsx', skiprows=9)
+df = pd.read_excel(r'C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\pedidos.xlsx', skiprows=9)
 
 # Limpiamos nombres de columnas
 df.columns = df.columns.astype(str).str.strip()
@@ -43,7 +43,7 @@ if no_mapeados:
 
   
 # 4. ABRIR LA PLANTILLA CON OPENPYXL
-wb_plantilla = openpyxl.load_workbook('plantilla_pedidos.xlsx')
+wb_plantilla = openpyxl.load_workbook(r'C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\plantilla_pedidos.xlsx')
 ws: Worksheet = wb_plantilla.active  # type: ignore
 assert ws is not None, "No se pudo cargar la hoja de la plantilla"
 
@@ -78,6 +78,6 @@ for i, (_, row) in enumerate(pivot.iterrows()):
                     ws.cell(row=fila_actual, column=col_idx, value=cantidad)
 
 # 6. GUARDAR EL RESULTADO
-salida = 'plantilla_con_pedidos_cargados.xlsx'
+salida = r'C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\plantilla_con_pedidos_cargados.xlsx'
 wb_plantilla.save(salida)
 print(f"¡Listo! Se procesaron {len(pivot)} clientes y se guardó en '{salida}' sin afectar fórmulas.")
