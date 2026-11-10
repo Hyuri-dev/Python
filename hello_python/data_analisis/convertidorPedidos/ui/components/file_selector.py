@@ -54,7 +54,6 @@ class FileSelector(ft.Column):
             label=label,
             value=value,
             hint_text=hint_text,
-            helper_text=helper_text,
             expand=True,
             dense=True,
             border_radius=8,
