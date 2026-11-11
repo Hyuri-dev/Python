@@ -4,23 +4,91 @@ from config.settings import SettingsManager
 from ui.components.file_selector import Colors, Icons
 from ui.views.converter_view import ConverterView
 from ui.views.settings_view import SettingsView
+from convertidor import procesar_pedidos
 
 def main(page: ft.Page):
+
+  page.align_items = ft.CrossAxisAlignment.CENTER
+  page.vertical_alignment = ft.MainAxisAlignment.CENTER
+  page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
+  archivo_seleccionado= {"path": None}
+
+  archivo_mapeo= {"path": None}
+
+  ruta_salida= {"path": None}
   
+
+  warning_text = ft.Text(
+    value="Ningun Archivo Seleccionado",
+    size= 20
+  )
+
   def on_files_selected(e: ft.FilePickerResultEvent):
-    if e.files:print(f"seleccionado: {e.files[0].name}")
-    else: print("Selección cancelada")
+    if e.files:
+      try:
+        archivo_seleccionado["path"] = e.files[0].path
+        warning_text.value= f"Se ha seleccionado el archivo: {archivo_seleccionado}"
+        boton_convertir.disabled = False
+      except Exception as ex:
+        warning_text.value= f"Error al procesar los archivos: {ex}"
+    else:
+      warning_text.value= "Selección cancelada"
+      archivo_seleccionado["path"] = None
+      boton_convertir.disabled = True
+    warning_text.update()
+
+  def convertir_archivo(e):
+    if not archivo_seleccionado["path"]:
+      return
+    warning_text.value= f"Procesando el archivo, espere..."
+    boton_convertir.disabled= True
+    page.update() 
+
+    try:
+      #ejecucion de la funcion de conversion
+      salida = procesar_pedidos(archivo_seleccionado["path"])
+      warning_text.value= f"Archivo guardado como: {salida}"
+    except Exception as ex:
+      warning_text.value= f"Error durante la conversión: {ex}"
+    finally:
+      boton_convertir.disabled= False
+      page.update()
+
   
+  page.appbar =ft.AppBar(
+    bgcolor= ft.Colors.GREY_900,
+    leading= ft.Icon(ft.Icons.MENU),leading_width=20,
+    title= ft.Text("Convertidor de Pedidos", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+    elevation=0,
+    actions=[
+      ft.PopupMenuButton(
+        key="popup",
+        items=[
+          ft.PopupMenuItem(content="Configurar ruta de plantilla"),
+          ft.PopupMenuItem(content="Configurar ruta de salida")
+        ]
+      )
+    ]
+  )
+
+  title= ft.Text(value="Ingrese el archivo de pedidos a convertir", size=30, weight=ft.FontWeight.BOLD)
+
   file_picker = ft.FilePicker(on_result=on_files_selected)
+
+  boton_abrir = ft.Button("Buscar Archivo", icon=ft.icons.Icons.UPLOAD_FILE, action=ft.PickFiles(file_picker,allow_multiple=False, dialog_title="Seleccione un archivo"))
+
+  boton_convertir = ft.Button("Convertir Archivo", icon=ft.icons.Icons.PLAY_ARROW, disabled=True, on_click=convertir_archivo)
   
+  page.services.append(file_picker)
+  page.add(
+    title, 
+           warning_text , 
+           boton_abrir,
+           ft.Divider(height=20, color=ft.Colors.BLUE_50),
+           boton_convertir)
 
   
-  page.overlay.append(file_picker)
-  page.add(ft.Text(value="Ingrese el archivo de pedidos a convertir"), ft.Button("Cargar", on_click=lambda _: file_picker.pick_files(allow_multiple=False)))
-  page.update()
-  
-  
-
 ft.run(main)
 
 # class GestorPedidosApp:
