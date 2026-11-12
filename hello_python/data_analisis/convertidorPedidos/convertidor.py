@@ -96,7 +96,7 @@ def procesar_pedidos(ruta_archivo:str , ruta_mapeo:str, ruta_salida:str,ruta_mod
                         ws.cell(row=fila_actual, column=col_idx, value=cantidad)
 
     # 6. GUARDAR EL RESULTADO
-    nombre_archivo_salida= "\plantilla_con_pedidos_cargados.xlsx"
+    nombre_archivo_salida= "\pedidos_convertidos_diacenca.xlsx"
     salida = ruta_salida+ nombre_archivo_salida
     wb_plantilla.save(salida)
     print(f"¡Listo! Se procesaron {len(pivot)} clientes y se guardó en '{salida}' sin afectar fórmulas.")
