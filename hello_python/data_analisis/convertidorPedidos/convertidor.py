@@ -5,12 +5,14 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 ruta_archivo_pedidos = "C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\pedidos.xlsx"
 ruta_plantilla_pedidos = "C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\plantilla_pedidos.xlsx"
+ruta_salida = "C:\\Users\\Personal\\Documents\\script_filtro"
+ruta_modelo = ""
 
-def procesar_pedidos(ruta_archivo:str , ruta_mapeo:str, ruta_salida:str,ruta_modelo:str) -> str:
+def procesar_pedidos(ruta_archivo:str, ruta_mapeo:str, ruta_salida:str,ruta_modelo:str) -> str:
 
     # 1. LEER EL ARCHIVO DE PEDIDOS
     # Saltamos las primeras 9 filas donde están los parámetros de búsqueda
-    df = pd.read_excel(ruta_archivo , skiprows=9)
+    df = pd.read_excel(ruta_archivo, skiprows=9)
 
     # Limpiamos nombres de columnas
     df.columns = df.columns.astype(str).str.strip()
@@ -198,5 +200,5 @@ def procesar_pedidos_novo(ruta_archivo:str) -> str:
     wb_plantilla.save(salida)
     print(f"¡Listo! Se procesaron {len(pivot)} clientes y se guardó en '{salida}' sin afectar fórmulas.")
 
-#procesar_pedidos_novo("convertidorPedidos/src/assets/pedidos_sin_convertir_novo.xlsx")
+procesar_pedidos_novo("convertidorPedidos/src/assets/pedidos_sin_convertir_novo.xlsx")
 #procesar_pedidos("convertidorPedidos/src/assets/pedidos_sin_convertir_diacenca.xlsx")
