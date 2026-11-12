@@ -4,8 +4,9 @@ import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
 
 ruta_archivo_pedidos = "C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\pedidos.xlsx"
+ruta_plantilla_pedidos = "C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\plantilla_pedidos.xlsx"
 
-def procesar_pedidos(ruta_archivo:str) -> str:
+def procesar_pedidos(ruta_archivo:str , ruta_mapeo:str, ruta_salida:str,ruta_modelo:str) -> str:
 
     # 1. LEER EL ARCHIVO DE PEDIDOS
     # Saltamos las primeras 9 filas donde están los parámetros de búsqueda
@@ -32,8 +33,7 @@ def procesar_pedidos(ruta_archivo:str) -> str:
     pivot = pivot.sort_values(by=['# Ref. Pedido', 'Nombre Cliente'], ascending=[False, True])
 
     # 3. DICCIONARIO DE MAPEO (Producto del sistema -> Nombre en la plantilla)
-    ruta_productos = r"C:\Users\Personal\Documents\script_filtro\productos.xlsx"
-    df_map = pd.read_excel(ruta_productos)
+    df_map = pd.read_excel(ruta_mapeo)
     mapeo_productos = dict(zip(df_map['PRODUCTOS-SISTEMA'],  df_map['COLUMNA-PLANTILLA']))
 
     # Extracción de los productos mapeados en el dict
@@ -52,7 +52,7 @@ def procesar_pedidos(ruta_archivo:str) -> str:
 
     
     # 4. ABRIR LA PLANTILLA CON OPENPYXL
-    wb_plantilla = openpyxl.load_workbook(r'C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\plantilla_pedidos.xlsx')
+    wb_plantilla = openpyxl.load_workbook(ruta_modelo)
     ws: Worksheet = wb_plantilla["DIACENCA"]  # type: ignore
     assert ws is not None, "No se pudo cargar la hoja de la plantilla"
 
@@ -96,8 +96,8 @@ def procesar_pedidos(ruta_archivo:str) -> str:
                         ws.cell(row=fila_actual, column=col_idx, value=cantidad)
 
     # 6. GUARDAR EL RESULTADO
-    ruta_salida= "plantilla_con_pedidos_cargados.xlsx"
-    salida = r'C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\' + ruta_salida
+    nombre_archivo_salida= "\plantilla_con_pedidos_cargados.xlsx"
+    salida = ruta_salida+ nombre_archivo_salida
     wb_plantilla.save(salida)
     print(f"¡Listo! Se procesaron {len(pivot)} clientes y se guardó en '{salida}' sin afectar fórmulas.")
 
@@ -198,5 +198,5 @@ def procesar_pedidos_novo(ruta_archivo:str) -> str:
     wb_plantilla.save(salida)
     print(f"¡Listo! Se procesaron {len(pivot)} clientes y se guardó en '{salida}' sin afectar fórmulas.")
 
-procesar_pedidos_novo("convertidorPedidos/src/assets/pedidos_sin_convertir_novo.xlsx")
-procesar_pedidos("convertidorPedidos/src/assets/pedidos_sin_convertir_diacenca.xlsx")
+#procesar_pedidos_novo("convertidorPedidos/src/assets/pedidos_sin_convertir_novo.xlsx")
+#procesar_pedidos("convertidorPedidos/src/assets/pedidos_sin_convertir_diacenca.xlsx")
