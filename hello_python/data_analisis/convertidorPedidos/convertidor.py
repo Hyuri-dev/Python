@@ -3,17 +3,74 @@ import pandas as pd
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
 import os
+import re
 
 ruta_archivo_pedidos = "C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\pedidos.xlsx"
 ruta_plantilla_pedidos = "C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\plantilla_pedidos.xlsx"
 ruta_salida = "C:\\Users\\Personal\\Documents\\script_filtro"
 ruta_modelo = ""
 
-def procesar_pedidos(ruta_archivo: str, ruta_mapeo: str, ruta_salida: str, ruta_modelo: str) -> dict:
+
+
+# Mapa de equivalencias para que la búsqueda tolere tildes, Ñ o el símbolo 
+EQUIVALENCIAS = {
+    "A": r"[AÁÀÄ\ufffd]",
+    "E": r"[EÉÈË\ufffd]",
+    "I": r"[IÍÌÏ\ufffd]",
+    "O": r"[OÓÒÖ\ufffd]",
+    "U": r"[UÚÙÜ\ufffd]",
+    "Ñ": r"[ÑN\ufffd]",
+}
+
+def construir_patron(zona: str) -> str:
+    partes = [EQUIVALENCIAS.get(c.upper(), re.escape(c)) for c in zona]
+    patron = r"\b" + "".join(partes) + r"\b"
+    
+    # Si la zona es exactamente "CENTRO", ignorar si dice "CENTRO COMERCIAL"
+    if zona.strip().upper() == "CENTRO":
+        patron += r"(?!\s+COMERCIAL\b)"
+        
+    return patron
+
+def extraer_zona_original(direccion: str, zonas: list[str]) -> str:
+    if not isinstance(direccion, str) or not direccion.strip():
+        return "Sin dirección"
+
+    # Si la dirección menciona una ciudad específica junto a "SECTOR CENTRO", priorizar la ciudad
+    for ciudad in ["CAGUA", "TURMERO", "SAN MATEO", "LA VICTORIA"]:
+        match_ciudad = re.search(rf"\b{ciudad}\b", direccion, flags=re.IGNORECASE)
+        if match_ciudad:
+            return match_ciudad.group(0)
+
+    for zona in sorted(zonas, key=len, reverse=True):
+        patron = construir_patron(zona)
+        match = re.search(patron, direccion, flags=re.IGNORECASE)
+        if match:
+            return match.group(0)
+
+    # Respaldo ampliado hasta 7 palabras después de BARRIO / URB / SECTOR
+    match_fallback = re.search(
+        r"\b(?:BARRIO|URB(?:ANIZACION)?|SECTOR)\s+([^\s,]+(?:\s+[^\s,]+){0,6}?)(?=\s+(?:MARACAY|ARAGUA|EDO|ESTADO|ZONA|CALLE|AV|LOCAL|CASA|NRO|$))",
+        direccion,
+        flags=re.IGNORECASE,
+    )
+    if match_fallback:
+        return match_fallback.group(1)
+
+    return "Zona no identificada"
+
+def procesar_pedidos(ruta_archivo: str, ruta_mapeo: str, ruta_salida: str, ruta_modelo: str, ruta_zonas: str) -> dict:
     # 1. Validar que los archivos existan antes de abrirlos
-    for nombre, ruta in [("Pedidos", ruta_archivo), ("Mapeo", ruta_mapeo), ("Modelo", ruta_modelo)]:
+    for nombre, ruta in [("Pedidos", ruta_archivo), ("Mapeo", ruta_mapeo), ("Modelo", ruta_modelo), ("Zonas", ruta_zonas)]:
         if not os.path.exists(ruta):
             raise FileNotFoundError(f"No se encontró el archivo de {nombre} en la ruta configurada.")
+    
+    df_zonas = pd.read_excel(ruta_zonas,sheet_name="ZONAS")
+    zonas_conocidas = (
+      df_zonas.iloc[:,0].dropna().astype(str).str.strip().tolist()
+    )
+    if not zonas_conocidas:
+      raise ValueError("El archivo de zonas esta vacio")
 
     # 2. Leer y validar columnas del archivo de pedidos
     try:
@@ -33,10 +90,12 @@ def procesar_pedidos(ruta_archivo: str, ruta_mapeo: str, ruta_salida: str, ruta_
         raise ValueError("El archivo no contiene pedidos válidos después de la fila 10.")
 
     df['Comentarios'] = df['Comentarios'].fillna('Sin comentario')
+    
+    df['Zona'] = df['Dirección'].apply(lambda d: extraer_zona_original(d, zonas_conocidas))
 
     # 3. Pivot Table
     pivot = df.pivot_table(
-        index=['Nombre Cliente', '# Ref. Pedido', 'Comentarios'],
+        index=['Nombre Cliente', '# Ref. Pedido', 'Comentarios', 'Zona'],
         columns='Nombre Producto',
         values='Cantidad Pedida',
         aggfunc='sum',
@@ -72,12 +131,14 @@ def procesar_pedidos(ruta_archivo: str, ruta_mapeo: str, ruta_salida: str, ruta_
     col_ref_idx = col_map.get("# ref. pedido") or 7
     col_client_idx = col_map.get("cliente") or 9
     col_comentario_idx = col_map.get("comentario") or 2
+    col_zona_idx = col_map.get("zona") or 6
 
     for i, (_, row) in enumerate(pivot.iterrows()):
         fila_actual = 2 + i
         ws.cell(row=fila_actual, column=col_client_idx, value=str(row['Nombre Cliente']))
         ws.cell(row=fila_actual, column=col_comentario_idx, value=str(row['Comentarios']))
         ws.cell(row=fila_actual, column=col_ref_idx, value=row['# Ref. Pedido'])
+        ws.cell(row=fila_actual, column=col_zona_idx, value=row['Zona'])
 
         for prod_sistema, header_plantilla in mapeo_productos.items():
             if prod_sistema in row and row[prod_sistema] > 0:

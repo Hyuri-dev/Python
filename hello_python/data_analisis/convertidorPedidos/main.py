@@ -13,11 +13,13 @@ async def main(page: ft.Page):
     CLAVE_MAPEO = "convertidor_app.rutas"
     CLAVE_SALIDA = "convertidor_app.ruta_salida"
     CLAVE_MODELO = "convertidor_app.ruta_modelo"
+    CLAVE_ZONA = "convertidor_app.ruta_zonas"
     prefs = ft.SharedPreferences()
 
     ruta_mapeo_inicial = await prefs.get(CLAVE_MAPEO)
     ruta_salida_inicial = await prefs.get(CLAVE_SALIDA)
     ruta_modelo_inicial = await prefs.get(CLAVE_MODELO)
+    ruta_zona_modelo_inicial = await prefs.get(CLAVE_ZONA)
 
     txt_ruta = ft.Text(
         value=f"Ruta de mapeo de productos: {ruta_mapeo_inicial or 'No configurada'}",
@@ -33,6 +35,12 @@ async def main(page: ft.Page):
         value=f"Ruta del modelo: {ruta_modelo_inicial or 'No configurada'}",
         selectable=True,
         color=ft.Colors.BLUE_700,
+    )
+    
+    txt_ruta_zonas =ft.Text(
+      value=f"Ruta para las zonas: {ruta_zona_modelo_inicial}" or "No configurada una ruta para leer las zonas",
+      selectable=True,
+      color=ft.Colors.BLUE_700,  
     )
 
     warning_text = ft.Text(value="Ningún Archivo Seleccionado", size=20)
@@ -59,6 +67,19 @@ async def main(page: ft.Page):
             await prefs.set(CLAVE_MAPEO, ruta)
             txt_ruta.value = f"Ruta de mapeo de productos: {ruta}"
             page.update()
+    
+    async def on_rutas_zonas_selected(e: ft.ControlEvent):
+      archivo = await ft.FilePicker().pick_files(
+        allow_multiple=False,
+        allowed_extensions=['xlsx' , 'xls'],
+        dialog_title="Seleccione el archivo de zonas"
+      )
+      
+      if archivo:
+        ruta =archivo[0].path
+        await prefs.set(CLAVE_ZONA, ruta)
+        txt_ruta_zonas.value = f"Ruta de zonas: {ruta}"
+        page.update()
 
     async def on_ruta_salida_selected(e: ft.ControlEvent):
         carpeta = await ft.FilePicker().get_directory_path(
@@ -87,9 +108,10 @@ async def main(page: ft.Page):
         ruta_mapeo = await prefs.get(CLAVE_MAPEO)
         ruta_salida = await prefs.get(CLAVE_SALIDA)
         ruta_modelo = await prefs.get(CLAVE_MODELO)
+        ruta_zonas = await prefs.get(CLAVE_ZONA)
 
         # 2. Validar que las 4 rutas existan antes de llamar a procesar_pedidos
-        if not all([ruta_pedidos, ruta_mapeo, ruta_salida, ruta_modelo]):
+        if not all([ruta_pedidos, ruta_mapeo, ruta_salida, ruta_modelo, ruta_zonas]):
             warning_text.value = "⚠️ Faltan rutas por configurar en el menú superior."
             warning_text.color = ft.Colors.AMBER_700
             page.update()
@@ -108,6 +130,7 @@ async def main(page: ft.Page):
                 ruta_mapeo,
                 ruta_salida,
                 ruta_modelo,
+                ruta_zonas,
             )
             warning_text.value = "✅ Archivo guardado como: pedidos_convertidos_diacenca.xlsx"
             warning_text.color = ft.Colors.GREEN_700
@@ -158,6 +181,10 @@ async def main(page: ft.Page):
                         content="Configurar ruta del modelo",
                         on_click=on_ruta_modelo_selected,
                     ),
+                    ft.PopupMenuItem(
+                        content="Configurar ruta para lectura de zonas",
+                        on_click=on_rutas_zonas_selected,
+                    ),
                 ],
             )
         ],
@@ -199,6 +226,7 @@ async def main(page: ft.Page):
         txt_ruta,
         txt_ruta_salida,
         txt_ruta_modelo,
+        txt_ruta_zonas
     )
 
 
