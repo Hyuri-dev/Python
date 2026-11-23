@@ -91,10 +91,12 @@ async def main(page: ft.Page):
         # 2. Validar que las 4 rutas existan antes de llamar a procesar_pedidos
         if not all([ruta_pedidos, ruta_mapeo, ruta_salida, ruta_modelo]):
             warning_text.value = "⚠️ Faltan rutas por configurar en el menú superior."
+            warning_text.color = ft.Colors.AMBER_700
             page.update()
             return
 
         warning_text.value = "Procesando el archivo, espere..."
+        warning_text.color = ft.Colors.BLUE_700
         boton_convertir.disabled = True
         page.update()
 
@@ -107,9 +109,24 @@ async def main(page: ft.Page):
                 ruta_salida,
                 ruta_modelo,
             )
-            warning_text.value = f"✅ Archivo guardado como: pedidos_convertidos_diacenca.xlsx"
+            warning_text.value = "✅ Archivo guardado como: pedidos_convertidos_diacenca.xlsx"
+            warning_text.color = ft.Colors.GREEN_700
+            if salida["no_mapeados"]:
+                lista_faltantes = "\n".join(f"• {p}" for p in salida["no_mapeados"])
+                dlg = ft.AlertDialog(
+                    title="⚠️ Productos omitidos (sin mapeo)",
+                    content=ft.Text(
+                        f"El archivo se genero, pero estos productos no estan en tu lista de mapeo:\n\n{lista_faltantes}",
+                        selectable=True,
+                    ),
+                    actions=[
+                        ft.TextButton("Entendido", on_click=lambda _: page.close(dlg))
+                    ],
+                )
+                page.open(dlg)
         except Exception as ex:
             warning_text.value = f"❌ Error durante la conversión: {ex}"
+            warning_text.color = ft.Colors.RED_700
         finally:
             boton_convertir.disabled = False
             page.update()

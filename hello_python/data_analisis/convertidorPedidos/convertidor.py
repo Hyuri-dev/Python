@@ -2,106 +2,102 @@ from numpy import rint
 import pandas as pd
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
+import os
 
 ruta_archivo_pedidos = "C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\pedidos.xlsx"
 ruta_plantilla_pedidos = "C:\\Users\\Personal\\python\\Python\\hello_python\\data_analisis\\convertidorPedidos\\src\\assets\\plantilla_pedidos.xlsx"
 ruta_salida = "C:\\Users\\Personal\\Documents\\script_filtro"
 ruta_modelo = ""
 
-def procesar_pedidos(ruta_archivo:str, ruta_mapeo:str, ruta_salida:str,ruta_modelo:str) -> str:
+def procesar_pedidos(ruta_archivo: str, ruta_mapeo: str, ruta_salida: str, ruta_modelo: str) -> dict:
+    # 1. Validar que los archivos existan antes de abrirlos
+    for nombre, ruta in [("Pedidos", ruta_archivo), ("Mapeo", ruta_mapeo), ("Modelo", ruta_modelo)]:
+        if not os.path.exists(ruta):
+            raise FileNotFoundError(f"No se encontró el archivo de {nombre} en la ruta configurada.")
 
-    # 1. LEER EL ARCHIVO DE PEDIDOS
-    # Saltamos las primeras 9 filas donde están los parámetros de búsqueda
-    df = pd.read_excel(ruta_archivo, skiprows=9)
+    # 2. Leer y validar columnas del archivo de pedidos
+    try:
+        df = pd.read_excel(ruta_archivo, skiprows=9)
+    except Exception as e:
+        raise ValueError(f"No se pudo leer el Excel de pedidos. Verifica que no esté corrupto. ({e})")
 
-    # Limpiamos nombres de columnas
     df.columns = df.columns.astype(str).str.strip()
 
-    # Filtramos filas válidas
-    df = df.dropna(subset=['Nombre Cliente', 'Nombre Producto'])
+    columnas_requeridas = {'Nombre Cliente', 'Nombre Producto', '# Ref. Pedido', 'Cantidad Pedida', 'Comentarios'}
+    faltantes = columnas_requeridas - set(df.columns)
+    if faltantes:
+        raise ValueError(f"Faltan columnas en el archivo de pedidos: {', '.join(faltantes)}")
 
-    # 2. PIVOT TABLE: Consolidar pedidos por cliente
-    # Agrupamos por cliente y sumamos la cantidad pedida de cada producto
+    df = df.dropna(subset=['Nombre Cliente', 'Nombre Producto'])
+    if df.empty:
+        raise ValueError("El archivo no contiene pedidos válidos después de la fila 10.")
+
+    df['Comentarios'] = df['Comentarios'].fillna('Sin comentario')
+
+    # 3. Pivot Table
     pivot = df.pivot_table(
-        index=['Nombre Cliente',"# Ref. Pedido"],
+        index=['Nombre Cliente', '# Ref. Pedido', 'Comentarios'],
         columns='Nombre Producto',
         values='Cantidad Pedida',
         aggfunc='sum',
         fill_value=0,
         sort=False
     ).reset_index()
-    
+
     pivot['ref'] = pd.to_numeric(pivot['# Ref. Pedido'], errors='coerce')
     pivot = pivot.sort_values(by=['# Ref. Pedido', 'Nombre Cliente'], ascending=[False, True])
 
-    # 3. DICCIONARIO DE MAPEO (Producto del sistema -> Nombre en la plantilla)
+    # 4. Validar archivo de mapeo
     df_map = pd.read_excel(ruta_mapeo)
-    mapeo_productos = dict(zip(df_map['PRODUCTOS-SISTEMA'],  df_map['COLUMNA-PLANTILLA']))
+    if not {'PRODUCTOS-SISTEMA', 'COLUMNA-PLANTILLA'}.issubset(df_map.columns):
+        raise ValueError("El archivo de mapeo debe tener las columnas 'PRODUCTOS-SISTEMA' y 'COLUMNA-PLANTILLA'.")
 
-    # Extracción de los productos mapeados en el dict
+    mapeo_productos = dict(zip(df_map['PRODUCTOS-SISTEMA'], df_map['COLUMNA-PLANTILLA']))
     productos_en_pedido = set(df['Nombre Producto'].unique())
+    no_mapeados = sorted(list(productos_en_pedido - set(mapeo_productos.keys())))
 
-    productos_mapeados = set(mapeo_productos.keys())
-
-    no_mapeados = productos_en_pedido - productos_mapeados
-
-    if no_mapeados:
-        print("\n" + "="*50)
-        print("⚠️  ¡ATENCIÓN! PRODUCTOS NO REGISTRADOS EN EL MAPEO:")
-    for prod in no_mapeados:
-        print(f"❌ {prod}")
-    print("Estos productos se omitirán en la plantilla hasta que los agregues.")
-
-    
-    # 4. ABRIR LA PLANTILLA CON OPENPYXL
+    # 5. Abrir plantilla y validar hoja
     wb_plantilla = openpyxl.load_workbook(ruta_modelo)
-    ws: Worksheet = wb_plantilla["DIACENCA"]  # type: ignore
-    assert ws is not None, "No se pudo cargar la hoja de la plantilla"
-
-    # Crear un mapa de {Nombre de Columna: Número de Columna} de la plantilla
-    col_map = {}
-    for col in range(1, ws.max_column + 1):
-        val = ws.cell(row=1, column=col).value
-        if val:
-            col_map[str(val).strip().lower()] = col
-
-    # 5. ESCRIBIR EN LA PLANTILLA
-    fila_inicio = 2  # Los datos inician en la fila 2
+    if "DIACENCA" not in wb_plantilla.sheetnames:
+        raise ValueError("La plantilla seleccionada no contiene la hoja 'DIACENCA'.")
     
-    col_ref_idx = col_map.get("# Ref. Pedido") or 7
-    col_client_idx = col_map.get('cliente') or 9
+    ws: Worksheet = wb_plantilla["DIACENCA"]  # type: ignore
+
+    col_map = {
+        str(ws.cell(row=1, column=col).value).strip().lower(): col
+        for col in range(1, ws.max_column + 1)
+        if ws.cell(row=1, column=col).value
+    }
+
+    col_ref_idx = col_map.get("# ref. pedido") or 7
+    col_client_idx = col_map.get("cliente") or 9
+    col_comentario_idx = col_map.get("comentario") or 2
 
     for i, (_, row) in enumerate(pivot.iterrows()):
-        fila_actual = fila_inicio + i
-        cliente_nombre = str(row['Nombre Cliente'])
-        nro_pedido = row['# Ref. Pedido']
+        fila_actual = 2 + i
+        ws.cell(row=fila_actual, column=col_client_idx, value=str(row['Nombre Cliente']))
+        ws.cell(row=fila_actual, column=col_comentario_idx, value=str(row['Comentarios']))
+        ws.cell(row=fila_actual, column=col_ref_idx, value=row['# Ref. Pedido'])
 
-        # Escribir el nombre del cliente en la Columna 8 (H)
-        ws.cell(row=fila_actual, column=col_client_idx, value=cliente_nombre)
-        
-        if col_ref_idx:
-          ws.cell(row=fila_actual, column=col_ref_idx, value=nro_pedido)
-        
-          
-
-        # Opcional: Escribir Ruta en Columna 6 (F) si la tienes identificada
-        # ws.cell(row=fila_actual, column=6, value="Ruta 1")
-
-        # Escribir las cantidades de cada producto
         for prod_sistema, header_plantilla in mapeo_productos.items():
-            if prod_sistema in row:
-                cantidad = row[prod_sistema]
-                if cantidad > 0:
-                    # Buscar la columna en la plantilla
-                    col_idx = col_map.get(header_plantilla.strip().lower())
-                    if col_idx:
-                        ws.cell(row=fila_actual, column=col_idx, value=cantidad)
+            if prod_sistema in row and row[prod_sistema] > 0:
+                col_idx = col_map.get(str(header_plantilla).strip().lower())
+                if col_idx:
+                    ws.cell(row=fila_actual, column=col_idx, value=row[prod_sistema])
 
-    # 6. GUARDAR EL RESULTADO
-    nombre_archivo_salida= "\pedidos_convertidos_diacenca.xlsx"
-    salida = ruta_salida+ nombre_archivo_salida
-    wb_plantilla.save(salida)
-    print(f"¡Listo! Se procesaron {len(pivot)} clientes y se guardó en '{salida}' sin afectar fórmulas.")
+    # 6. Guardar verificando si el archivo destino está abierto en Excel
+    salida = os.path.join(ruta_salida, "pedidos_convertidos_diacenca.xlsx")
+    try:
+        wb_plantilla.save(salida)
+    except PermissionError:
+        raise PermissionError("Cierra 'pedidos_convertidos_diacenca.xlsx' en Excel antes de volver a generar el archivo.")
+
+    # Retornamos un resumen estructurado hacia Flet
+    return {
+        "archivo_salida": salida,
+        "total_clientes": len(pivot),
+        "no_mapeados": no_mapeados
+    }
 
 #  NOVO
 def procesar_pedidos_novo(ruta_archivo:str) -> str:
@@ -200,5 +196,5 @@ def procesar_pedidos_novo(ruta_archivo:str) -> str:
     wb_plantilla.save(salida)
     print(f"¡Listo! Se procesaron {len(pivot)} clientes y se guardó en '{salida}' sin afectar fórmulas.")
 
-procesar_pedidos_novo("convertidorPedidos/src/assets/pedidos_sin_convertir_novo.xlsx")
+# procesar_pedidos_novo("convertidorPedidos/src/assets/pedidos_sin_convertir_novo.xlsx")
 #procesar_pedidos("convertidorPedidos/src/assets/pedidos_sin_convertir_diacenca.xlsx")
